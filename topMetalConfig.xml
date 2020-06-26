@@ -1,0 +1,25 @@
+<!-- General Settings 
+	- fullReadout: 1 for full pixel detector, 0 for single pixel operation
+
+--> 
+<general 
+	fullReadout="1" 
+/>
+
+<!-- Digitizer Settigns -->
+<digitizer 
+   samplingRate=""
+   nSamplesPerWaveform="4096"
+   triggerThreshold="1"
+   triggerMode="1"
+   numberOfBoards="1"
+
+/>
+
+<!-- FPGA Settings -->
+<fpga
+	stopAddressMode="1"
+	stopAddress="5000"
+/>
+
+<!-- Output file settings
