@@ -1,25 +1,53 @@
+<!-- Config file for control of the Top Metal II- Chip at University of Washington, CENPA -->
+
 <!-- General Settings 
-	- fullReadout: 1 for full pixel detector, 0 for single pixel operation
+	- fullReadout : 
+		- 0 : for single pixel operation
+		- 1 : for full pixel detector 
 
 --> 
 <general 
 	fullReadout="1" 
 />
 
-<!-- Digitizer Settigns -->
+
+
+<!-- Digitizer Settigns
+	- samplingRate : in MHz
+	- nSamplesPerTrigger : number of samples to save on a trigger
+	- nPreTriggerSamples : number of points before the trigger to keep. Must be <nSamplesPerTrigger
+	- triggerTheshold : voltage threshold for triggering
+	- triggerMode : 
+		- 0 : no trigger, continous readout
+		- 1 : hardware trigger on threshold
+		- 2 : software trigger
+ -->
 <digitizer 
-   samplingRate=""
-   nSamplesPerWaveform="4096"
+   samplingRate="100" 
+   nSamplesPerTrigger="4096"
+   nPreTriggerSample="1000"
    triggerThreshold="1"
    triggerMode="1"
    numberOfBoards="1"
-
 />
 
-<!-- FPGA Settings -->
+
+
+<!-- FPGA Settings 
+	- stopAddressMode :
+		- 0 : STOP_ADDR disable, pixels loop in circular buffer
+		- 1 : STOP_ADDR enabled
+	- stopAddress : pixel number to stop at during full readout
+
+-->
 <fpga
 	stopAddressMode="1"
 	stopAddress="5000"
 />
 
 <!-- Output file settings
+	-filename : name of output file
+ -->
+<output
+	filename="test.txt"
+/>
