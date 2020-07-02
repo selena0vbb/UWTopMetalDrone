@@ -1,13 +1,13 @@
 <!-- Config file for control of the Top Metal II- Chip at University of Washington, CENPA -->
 
 <!-- General Settings 
-	- fullReadout : 
+	- readOutMode : 
 		- 0 : for single pixel operation
 		- 1 : for full pixel detector 
 
 --> 
 <general 
-	fullReadout="1" 
+	readOutMode="1" 
 />
 
 
@@ -25,7 +25,7 @@
 <digitizer 
    samplingRate="100" 
    nSamplesPerTrigger="4096"
-   nPreTriggerSample="1000"
+   nPreTriggerSamples="1000"
    triggerThreshold="1"
    triggerMode="1"
    numberOfBoards="1"
