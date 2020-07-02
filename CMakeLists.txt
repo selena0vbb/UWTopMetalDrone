@@ -9,7 +9,7 @@ include_directories(include)
 
 
 # sources
-file(GLOB sources "${PROJECT_SOURCE_DIR}src/*.cpp")
+file(GLOB sources "${PROJECT_SOURCE_DIR}/source/*.cpp")
 file(GLOB headers "${PROJECT_SOURCE_DIR}/include/*.h")
 
 # create executable
