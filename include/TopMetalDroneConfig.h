@@ -53,7 +53,8 @@ public:
 	void PrintConfigSettings() const;
 
 	// Getters
-	int GetReadoutMode() {return readOutMode; };
+	int GetReadoutMode() { return readOutMode; };
+	CaenDigitizerSettings & GetDigitizerSettings() { return digitizerSettings; };
 
 	// Setters
 	// No need for setters. Settings should only be controlled from config file

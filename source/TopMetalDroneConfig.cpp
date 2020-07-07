@@ -1,4 +1,4 @@
-#include "topMetalDroneConfig.h"
+#include "TopMetalDroneConfig.h"
 
 // For printing enums
 const char * TopMetalReadoutModeChar[] = {
