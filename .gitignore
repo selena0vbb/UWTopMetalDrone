@@ -37,3 +37,6 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 cmake_install.cmake
+
+# Sublime files
+*.sublime-workspace

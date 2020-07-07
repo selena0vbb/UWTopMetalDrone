@@ -1,0 +1,13 @@
+{
+	"settings": {
+		"easy_clang_complete_verbose" : true,
+		"ecc_use_libclange" : true
+	}, 
+	
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	]
+}
