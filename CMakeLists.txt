@@ -14,3 +14,4 @@ file(GLOB headers "${PROJECT_SOURCE_DIR}/include/*.h")
 
 # create executable
 add_executable(topMetalDrone topMetalDrone.cpp ${sources} ${headers})
+target_link_libraries(topMetalDrone CAENDigitizer)
