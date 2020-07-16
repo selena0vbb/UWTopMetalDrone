@@ -23,7 +23,8 @@ int main(int argc, char const *argv[])
 
 	// Create and communicate with digitizer
 	std::printf("Connect and configure digitizer....\n");
-	auto digitizer = TopMetalDigitizer(config.GetDigitizerSettings());
+	TopMetalDigitizer digitizer(config.GetDigitizerSettings());
+	digitizer.setVerboseLevel(1);
 	digitizer.ConfigureDigitizer();
 
 

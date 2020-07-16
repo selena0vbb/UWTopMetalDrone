@@ -8,9 +8,6 @@ TopMetalDigitizer::TopMetalDigitizer(){
 		(defaults will often not be good for a specific application)
 	*/
 	nboards = 1;
-	// boardAddr = new int[nboards];
-	// boardSelect = 1;
-
 
 }
 
@@ -20,16 +17,12 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 	nSamplesPerTrigger = digitizerSettings.nSamplesPerTrigger;
 	nPreTriggerSamples = digitizerSettings.nPreTriggerSamples;
 
-	// boardAddr = new int[nboards];
-	// boardSelect = 1;
-
-
 }
 
 TopMetalDigitizer::~TopMetalDigitizer(){
 
-	err = CAEN_DGTZ_CloseDigitizer(*boardAddr);
-	std::cout << "Status: " << err << ".\tDigitizer closed." << std::endl;
+	err = CAEN_DGTZ_CloseDigitizer(boardAddr);
+	if (verbose) std::cout << "Closing Digitizer...\t\tStatus: " << err << "\n";
 }
 
 
@@ -38,8 +31,16 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 		Uses the class settings to connect and configure the physical hardware
 	*/
 
-	err = CAEN_DGTZ_OpenDigitizer(CAEN_DGTZ_USB, 0, 0, 0, boardAddr);
-	
-	std::cout << err << std::endl;
+	// Open connection to digitizer
+	err = CAEN_DGTZ_OpenDigitizer(CAEN_DGTZ_USB, 0, 0, 0, &boardAddr);
+
+	// Get Board info
+	err = CAEN_DGTZ_GetInfo(boardAddr, &boardInformation);
+
+	// Congifure board with settings
+	err = CAEN_DGTZ_Reset(boardAddr); 
+
+
+	if (verbose) std::cout<< "Opening and configuring digitizer....\t\tStatus: " << err << "\n";
 	return err;
 }
