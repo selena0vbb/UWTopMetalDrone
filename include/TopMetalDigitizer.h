@@ -33,6 +33,10 @@ private:
 	// Sample settings
 	int nSamplesPerTrigger;
 	int nPreTriggerSamples;
+	int maxNumberOfEventsPerTransfer = 1;
+
+	// Trigger settings
+
 
 	// Misc Settings
 	int verbose = 0;

@@ -39,7 +39,9 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 
 	// Congifure board with settings
 	err = CAEN_DGTZ_Reset(boardAddr); 
-
+	err = CAEN_DGTZ_SetRecordLength(boardAddr, nSamplesPerTrigger);
+	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, 1);
+	err = CAEN_DGTZ_SetMaxNumEventsBLT(boardAddr, maxNumberOfEventsPerTransfer);
 
 	if (verbose) std::cout<< "Opening and configuring digitizer....\t\tStatus: " << err << "\n";
 	return err;
