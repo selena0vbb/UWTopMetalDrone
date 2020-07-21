@@ -16,6 +16,7 @@
 	- samplingRate : in MHz
 	- nSamplesPerTrigger : number of samples to save on a trigger
 	- nPreTriggerSamples : number of points before the trigger to keep. Must be <nSamplesPerTrigger
+	- maxNumberEventsTransferred : when reading events off the digitizer, this is the maximum number of events transferred at once
 	- triggerTheshold : voltage threshold for triggering
 	- triggerMode : 
 		- 0 : no trigger, continous readout
@@ -26,6 +27,7 @@
    samplingRate="100" 
    nSamplesPerTrigger="4096"
    nPreTriggerSamples="1000"
+   maxNumberEventsTransferred="4"  
    triggerThreshold="1"
    triggerMode="1"
    numberOfBoards="1"

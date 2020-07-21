@@ -15,10 +15,12 @@ public:
 	
 	// Getters
 	int getVerboseLevel(){ return verbose; };
-
+	int getBoardAddress() { return boardAddr; };
 
 	CAEN_DGTZ_ErrorCode ConfigureDigitizer();
-
+	CAEN_DGTZ_ErrorCode StartDataAcquisition();
+	CAEN_DGTZ_ErrorCode StopDataAcquisition();
+	CAEN_DGTZ_ErrorCode SendSWTrigger();
 private:
 
 	// CAEN data types
@@ -36,7 +38,11 @@ private:
 	int maxNumberOfEventsPerTransfer = 1;
 
 	// Trigger settings
+	DigitizerTriggerModes triggerMode;
+	int triggerThreshold; // in ADC
 
+	// Readout settings
+	int maxNumberEventsTransferred;
 
 	// Misc Settings
 	int verbose = 0;

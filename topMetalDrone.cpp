@@ -13,7 +13,7 @@
 int main(int argc, char const *argv[])
 {
 	/* code */
-	std::printf("Hello world, this is the introduction to the Top-metal Drone code\n");
+	std::cout << "Starting UW Top Metal II- Drone Controller\n";
 
 	TopMetalDroneConfig config;
 	std::string infile = "topMetalConfig.xml";
@@ -26,7 +26,21 @@ int main(int argc, char const *argv[])
 	TopMetalDigitizer digitizer(config.GetDigitizerSettings());
 	digitizer.setVerboseLevel(1);
 	digitizer.ConfigureDigitizer();
+	digitizer.StartDataAcquisition();
 
+	// Test some readout and software trigger
+	digitizer.SendSWTrigger();
+	char * buffer = NULL;
+	char * evtptr = NULL;
+	uint32_t size, bsize;
+	uint32_t numEvents;
 
+	int err = CAEN_DGTZ_MallocReadoutBuffer(digitizer.getBoardAddress(), &buffer, &size);
+	std::cout << err << "\n";
+	digitizer.SendSWTrigger();
+	CAEN_DGTZ_ReadData(digitizer.getBoardAddress(), CAEN_DGTZ_SLAVE_TERMINATED_READOUT_MBLT, buffer, &bsize);
+	CAEN_DGTZ_GetNumEvents(digitizer.getBoardAddress(), buffer, bsize, &numEvents);
+	CAEN_DGTZ_FreeReadoutBuffer(&buffer);
+	std::cout << "Number of Events: " << numEvents << std::endl;
 	return 0;
 }

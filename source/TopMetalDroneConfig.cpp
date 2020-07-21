@@ -86,6 +86,11 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		parseSuccess = false;
 	}
 
+	if( digitizerSettingElement->QueryIntAttribute("maxNumberEventsTransferred", &digitizerSettings.maxNumberEventsTransferred) != 0) {
+		PrintMissingElement("digitizer:maxNumberEventsTransferred");
+		parseSuccess = false;
+	}
+
 	if( digitizerSettingElement->QueryDoubleAttribute("triggerThreshold", &digitizerSettings.triggerThreshold) != 0){
 		PrintMissingElement("digitizer:triggerThreshold");
 		parseSuccess = false;
@@ -158,6 +163,7 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 	std::cout << "\tNumber of Pre Trigger Samples: " << digitizerSettings.nPreTriggerSamples 					 << "\n";
 	std::cout << "\tTrigger Mode: "                  << DigitizerTriggerModesChar[digitizerSettings.triggerMode] << "\n";
 	std::cout << "\tTrigger Threshold: "             << digitizerSettings.triggerThreshold   					 << "\n";
+	std::cout << "\tMaximum Number of Events Transferred per Read: " << digitizerSettings.maxNumberEventsTransferred << "\n";
 	std::cout << "\tNumber of Digitizer Boards: "    << digitizerSettings.numberOfBoards 	 					 << "\n";
 	
 	// FPGA Settings

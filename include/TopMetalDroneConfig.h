@@ -8,9 +8,10 @@
 
 enum DigitizerTriggerModes
 {
-	Continous,
-	HardwareTrigger,
-	SoftwareTrigger
+	Continuous,
+	SelfTrigger,
+	SoftwareTrigger,
+	ExternalTrigger
 };
 
 
@@ -27,6 +28,7 @@ struct CaenDigitizerSettings
 	double samplingRate; // MHz
 	int nSamplesPerTrigger;
 	int nPreTriggerSamples;
+	int maxNumberEventsTransferred;
 	double triggerThreshold;
 	DigitizerTriggerModes triggerMode;
 	int numberOfBoards;
