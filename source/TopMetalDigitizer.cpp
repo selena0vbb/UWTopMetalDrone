@@ -23,6 +23,7 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 
 TopMetalDigitizer::~TopMetalDigitizer(){
 
+	err = CAEN_DGTZ_FreeReadoutBuffer(&buffer);
 	err = CAEN_DGTZ_CloseDigitizer(boardAddr);
 	if (verbose) std::cout << "Closing Digitizer...\t\tStatus: " << err << "\n";
 }
@@ -61,6 +62,20 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 			break;
 	}
 	if (verbose) std::cout << "Configure trigger settings...\t\tStatus: " << err << "\n";
+	
+	// Allocate buffer memory
+	err = CAEN_DGTZ_MallocReadoutBuffer(boardAddr, &buffer, &bufferSize);
+	if (verbose) std::cout << "Allocate buffer memory...\t\tStatus: " << err << "\n";
+	
+	return err;
+}
+
+CAEN_DGTZ_ErrorCode TopMetalDigitizer::TransferData(){
+
+	// Readout data
+	err = CAEN_DGTZ_ReadData(boardAddr, CAEN_DGTZ_SLAVE_TERMINATED_READOUT_MBLT, buffer, &readoutSize);
+	err = CAEN_DGTZ_GetNumEvents(boardAddr, buffer, readoutSize, &numberEventsRead);
+
 	return err;
 }
 

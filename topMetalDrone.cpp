@@ -29,18 +29,35 @@ int main(int argc, char const *argv[])
 	digitizer.StartDataAcquisition();
 
 	// Test some readout and software trigger
+	for(int i=0; i < 20; i++){
+	
 	digitizer.SendSWTrigger();
-	char * buffer = NULL;
-	char * evtptr = NULL;
-	uint32_t size, bsize;
-	uint32_t numEvents;
+//	leep(30);
+	}
+	// digitizer.SendSWTrigger();
+	// digitizer.SendSWTrigger();
+	digitizer.TransferData();
 
-	int err = CAEN_DGTZ_MallocReadoutBuffer(digitizer.getBoardAddress(), &buffer, &size);
-	std::cout << err << "\n";
-	digitizer.SendSWTrigger();
-	CAEN_DGTZ_ReadData(digitizer.getBoardAddress(), CAEN_DGTZ_SLAVE_TERMINATED_READOUT_MBLT, buffer, &bsize);
-	CAEN_DGTZ_GetNumEvents(digitizer.getBoardAddress(), buffer, bsize, &numEvents);
-	CAEN_DGTZ_FreeReadoutBuffer(&buffer);
-	std::cout << "Number of Events: " << numEvents << std::endl;
+	// Get event info
+	CAEN_DGTZ_EventInfo_t eventInfo;
+	for(int i=0; i<digitizer.getNumberOfEventsRead(); i++){
+		char * evtptr = digitizer.getEventPtr();
+		CAEN_DGTZ_UINT16_EVENT_t * eventBuffer = digitizer.getEventBuffer();
+		void * voidEventBuffer = NULL;
+		CAEN_DGTZ_GetEventInfo(digitizer.getBoardAddress(), digitizer.getBuffer(), digitizer.getReadoutSize(), i, &eventInfo, &evtptr);
+		std::cout << "EventCounter: " << eventInfo.EventCounter << "\t  ";
+		CAEN_DGTZ_DecodeEvent(digitizer.getBoardAddress(), evtptr, &voidEventBuffer);
+		CAEN_DGTZ_UINT16_EVENT_t * test = static_cast<	CAEN_DGTZ_UINT16_EVENT_t * >(voidEventBuffer);
+		double mean = 0;
+		for(int j=0; j < test->ChSize[0]; j++){
+			mean += test->DataChannel[0][j];
+		}
+		mean /= test->ChSize[0];
+		std::cout << "Mean ADU: " << mean;	
+		std::cout << "\n";
+	        CAEN_DGTZ_FreeEvent(digitizer.getBoardAddress(), &voidEventBuffer);
+	}
+	
+	std::cout << "Number of Events: " << digitizer.getNumberOfEventsRead() << std::endl;
 	return 0;
 }
