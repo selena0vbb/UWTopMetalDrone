@@ -5,6 +5,9 @@
 // xml parsing headers
 #include "tinyxml2.h"
 
+// Command line interface header
+#include "CLI11.hpp"
+
 // Custom headers
 #include "TopMetalDroneConfig.h"
 #include "TopMetalDigitizer.h"
@@ -12,11 +15,26 @@
 
 int main(int argc, char const *argv[])
 {
-	/* code */
-	std::cout << "Starting UW Top Metal II- Drone Controller\n";
+	
+	CLI::App topMetalDroneParser{"UW Top Metal II- Drone Controller"};
 
-	TopMetalDroneConfig config;
+	// command line input variables
 	std::string infile = "topMetalConfig.xml";
+
+	// define command line arguments
+	topMetalDroneParser.add_option("-c, --config", infile, "Top Metal Drone Config file (xml)")->check(CLI::ExistingFile);
+
+	// parse command line arguments
+	try{
+		topMetalDroneParser.parse(argc, argv);
+	}
+	catch (const CLI::ParseError &e) {
+		return topMetalDroneParser.exit(e);
+	}
+
+	// start controller
+	std::cout << "Starting UW Top Metal II- Drone Controller\n";
+	TopMetalDroneConfig config;
 	bool configSucces = config.ReadConfigFile(infile);
 	if(configSucces) config.PrintConfigSettings();
 
