@@ -11,17 +11,19 @@ public:
 	~TopMetalDigitizer();
 
 	// Setters
-	void setVerboseLevel(int verbose) { this->verbose = verbose; };
+	void SetVerboseLevel(int verbose) { this->verbose = verbose; };
 	
 	// Getters
-	int getVerboseLevel(){ return verbose; };
-	int getBoardAddress() { return boardAddr; };
-	int getNumberOfEventsRead() { return numberEventsRead; };
-	char * getBuffer() { return buffer; };
-	char * getEventPtr() { return evtptr; };
-	CAEN_DGTZ_UINT16_EVENT_t * getEventBuffer() { return eventBuffer; };
-	uint32_t getBufferSize() { return bufferSize; };
-	uint32_t getReadoutSize() { return readoutSize; };
+	int GetVerboseLevel(){ return verbose; };
+	int GetBoardAddress() { return boardAddr; };
+	int GetNumberOfEventsRead() { return numberEventsRead; };
+	char * GetBuffer() { return buffer; };
+	char * GetEventPtr() { return evtptr; };
+	void * GetEventBuffer() { return eventBuffer; };
+	uint32_t GetBufferSize() { return bufferSize; };
+	uint32_t GetReadoutSize() { return readoutSize; };
+	
+	// CAEN Digitizer wrapper functions
 	CAEN_DGTZ_ErrorCode ConfigureDigitizer();
 	CAEN_DGTZ_ErrorCode StartDataAcquisition();
 	CAEN_DGTZ_ErrorCode StopDataAcquisition();
@@ -51,7 +53,7 @@ private:
 	int maxNumberEventsTransferred;
 	char * buffer = NULL;
 	char * evtptr = NULL; // Need to be initialized to null
-	CAEN_DGTZ_UINT16_EVENT_t * eventBuffer = NULL;
+	void * eventBuffer = NULL;
 	uint32_t bufferSize, readoutSize;
         uint32_t numberEventsRead = 0;
 
