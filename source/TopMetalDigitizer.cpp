@@ -17,6 +17,8 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 	nSamplesPerTrigger = digitizerSettings.nSamplesPerTrigger;
 	nPreTriggerSamples = digitizerSettings.nPreTriggerSamples;
 	triggerMode = digitizerSettings.triggerMode;
+	triggerThreshold = digitizerSettings.triggerThreshold;
+	triggerPolarity  = static_cast<CAEN_DGTZ_PulsePolarity_t> (digitizerSettings.triggerPolarity);
 	maxNumberEventsTransferred = digitizerSettings.maxNumberEventsTransferred;
 
 }
@@ -53,12 +55,17 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 		case Continuous:
 			break;
 		case SelfTrigger:
+
+			err = CAEN_DGTZ_SetChannelSelfTrigger(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY, 1);
+			err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, 1, triggerPolarity);
+			err = CAEN_DGTZ_SetTriggerPolarity(boardAddr, 1, static_cast<CAEN_DGTZ_TriggerPolarity_t> (triggerPolarity));
+			err = CAEN_DGTZ_SetChannelTriggerThreshold(boardAddr, 1, triggerThreshold);
 			break;
 		case SoftwareTrigger:
-			err = CAEN_DGTZ_SetChannelSelfTrigger(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY, 1);
 			err = CAEN_DGTZ_SetSWTriggerMode(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY);
 			break;
 		case ExternalTrigger:
+			err = CAEN_DGTZ_SetExtTriggerInputMode(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY);
 			break;
 	}
 	if (verbose) std::cout << "Configure trigger settings...\t\tStatus: " << err << "\n";

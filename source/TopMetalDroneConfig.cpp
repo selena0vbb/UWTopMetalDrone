@@ -91,7 +91,12 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		parseSuccess = false;
 	}
 
-	if( digitizerSettingElement->QueryDoubleAttribute("triggerThreshold", &digitizerSettings.triggerThreshold) != 0){
+	if ( digitizerSettingElement->QueryIntAttribute("triggerPolarity", &digitizerSettings.triggerPolarity) !=0){
+		PrintMissingElement("digitizer:triggerPolarity");
+		parseSuccess = false;
+	}
+
+	if( digitizerSettingElement->QueryAttribute("triggerThreshold", &digitizerSettings.triggerThreshold) != 0){
 		PrintMissingElement("digitizer:triggerThreshold");
 		parseSuccess = false;
 	}

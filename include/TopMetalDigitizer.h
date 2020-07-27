@@ -47,6 +47,7 @@ private:
 
 	// Trigger settings
 	DigitizerTriggerModes triggerMode;
+	CAEN_DGTZ_PulsePolarity_t triggerPolarity;
 	int triggerThreshold; // in ADC
 
 	// Readout settings

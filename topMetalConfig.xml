@@ -17,19 +17,24 @@
 	- nSamplesPerTrigger : number of samples to save on a trigger
 	- nPreTriggerSamples : number of points before the trigger to keep. Must be <nSamplesPerTrigger
 	- maxNumberEventsTransferred : when reading events off the digitizer, this is the maximum number of events transferred at once
-	- triggerTheshold : voltage threshold for triggering
+	- triggerPolarity : self trigger on rising (0) or falling (1) edge of signal
+	- triggerTheshold : threshold above (below) which the channel triggers in self trigger mode (ADU) 
 	- triggerMode : 
 		- 0 : no trigger, continous readout
-		- 1 : hardware trigger on threshold
+		- 1 : channel self trigger  on threshold
 		- 2 : software trigger
- -->
+		- 3 : external trigger
+	- dcOffset : negative offset to the dynamic range 0-Vpp. Must be in range of 0-65535 (16 bit number)
+		-->
 <digitizer 
    samplingRate="100" 
    nSamplesPerTrigger="4096"
    nPreTriggerSamples="1000"
    maxNumberEventsTransferred="4"  
-   triggerThreshold="1"
-   triggerMode="1"
+   triggerPolarity="1"
+   triggerThreshold="7000"
+   triggerMode="2"
+   dcOffset="0"
    numberOfBoards="1"
 />
 

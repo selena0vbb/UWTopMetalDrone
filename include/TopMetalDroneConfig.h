@@ -29,7 +29,8 @@ struct CaenDigitizerSettings
 	int nSamplesPerTrigger;
 	int nPreTriggerSamples;
 	int maxNumberEventsTransferred;
-	double triggerThreshold;
+	int triggerPolarity;
+	int triggerThreshold;
 	DigitizerTriggerModes triggerMode;
 	int numberOfBoards;
 };
