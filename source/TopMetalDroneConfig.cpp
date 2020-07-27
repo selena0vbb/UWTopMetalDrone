@@ -108,6 +108,14 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 	}
 	digitizerSettings.triggerMode = static_cast<DigitizerTriggerModes>(intTriggerMode);
 
+	int intDCOffset = 0;
+	if( digitizerSettingElement->QueryIntAttribute("dcOffset", &intDCOffset) != 0){
+		PrintMissingElement("digitizer:dcOffset");
+		std::cout << "Falling back to default value of 0x0000\n";
+	}
+	digitizerSettings.acquisitionDCOffset = static_cast<uint16_t> (intDCOffset);
+
+
 	if( digitizerSettingElement->QueryIntAttribute("numberOfBoards", &digitizerSettings.numberOfBoards) != 0){
 		PrintMissingElement("digitizer:numberOfBoards");
 		parseSuccess = false;
@@ -163,12 +171,14 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 
 	// Digitizer Settings
 	std::cout << "Digitizer Settings\n";
-	std::cout << "\tSampling Rate (MHz): " 			 << digitizerSettings.samplingRate 		 					 << "\n";
+	std::cout << "\tSampling Rate (MHz): " 	  	 << digitizerSettings.samplingRate 		            			 << "\n";
 	std::cout << "\tNumber of Samples Per Trigger: " << digitizerSettings.nSamplesPerTrigger 					 << "\n";
 	std::cout << "\tNumber of Pre Trigger Samples: " << digitizerSettings.nPreTriggerSamples 					 << "\n";
-	std::cout << "\tTrigger Mode: "                  << DigitizerTriggerModesChar[digitizerSettings.triggerMode] << "\n";
+	std::cout << "\tTrigger Mode: "                  << DigitizerTriggerModesChar[digitizerSettings.triggerMode]                     << "\n";
 	std::cout << "\tTrigger Threshold: "             << digitizerSettings.triggerThreshold   					 << "\n";
-	std::cout << "\tMaximum Number of Events Transferred per Read: " << digitizerSettings.maxNumberEventsTransferred << "\n";
+	std::cout << "\tTrigger Polarity: "              << digitizerSettings.triggerPolarity 						 << "\n";
+	std::cout << "\tMaximum Number of Events Transferred per Read: " << digitizerSettings.maxNumberEventsTransferred                 << "\n";
+	std::cout << "\tDC Offset of Dynamic Voltage Range (Negative Direction): " << digitizerSettings.acquisitionDCOffset               << "\n";
 	std::cout << "\tNumber of Digitizer Boards: "    << digitizerSettings.numberOfBoards 	 					 << "\n";
 	
 	// FPGA Settings

@@ -20,6 +20,7 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 	triggerThreshold = digitizerSettings.triggerThreshold;
 	triggerPolarity  = static_cast<CAEN_DGTZ_PulsePolarity_t> (digitizerSettings.triggerPolarity);
 	maxNumberEventsTransferred = digitizerSettings.maxNumberEventsTransferred;
+	acquisitionDCOffset = digitizerSettings.acquisitionDCOffset;
 
 }
 
@@ -48,6 +49,7 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, 1);
 	err = CAEN_DGTZ_SetMaxNumEventsBLT(boardAddr, maxNumberEventsTransferred);
 	err = CAEN_DGTZ_SetAcquisitionMode(boardAddr, CAEN_DGTZ_SW_CONTROLLED);
+	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, 1, acquisitionDCOffset);
 	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
 
 	// Configure Trigger and acquisition settings depending on the settings file

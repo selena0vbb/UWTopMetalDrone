@@ -32,6 +32,7 @@ struct CaenDigitizerSettings
 	int triggerPolarity;
 	int triggerThreshold;
 	DigitizerTriggerModes triggerMode;
+	uint16_t acquisitionDCOffset;
 	int numberOfBoards;
 };
 

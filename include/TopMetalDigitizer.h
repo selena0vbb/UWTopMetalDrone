@@ -20,6 +20,7 @@ public:
 	char * GetBuffer() { return buffer; };
 	char * GetEventPtr() { return evtptr; };
 	void * GetEventBuffer() { return eventBuffer; };
+	uint16_t GetAcquisitionDCOffset() { return acquisitionDCOffset; };
 	uint32_t GetBufferSize() { return bufferSize; };
 	uint32_t GetReadoutSize() { return readoutSize; };
 	
@@ -57,6 +58,7 @@ private:
 	void * eventBuffer = NULL;
 	uint32_t bufferSize, readoutSize;
         uint32_t numberEventsRead = 0;
+	uint16_t acquisitionDCOffset;
 
 	// Misc Settings
 	int verbose = 0;
