@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.5.1)
 project(uw_topmetal_drone)
 set(CMAKE_BUILD_TYPE Debug)
 
+# Find required modules
+# find_package(HDF5 COMPONENTS CXX NO_MODULE REQUIRED shared)
+
+
 # includes
 include_directories(include)
 
