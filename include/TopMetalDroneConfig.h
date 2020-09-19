@@ -59,9 +59,11 @@ public:
 	// Getters
 	int GetReadoutMode() { return readOutMode; };
 	CaenDigitizerSettings & GetDigitizerSettings() { return digitizerSettings; };
-
+	std::string GetOutputFilename() { return outputFilename; };
+	
 	// Setters
-	// No need for setters. Settings should only be controlled from config file
+	// Most setters are controlled by the config file. CLI gives options for overriding some values
+	void SetOutputFilename(std::string ofile) { this->outputFilename = ofile; };
 
 private:
 
@@ -77,20 +79,6 @@ private:
 	// Output file
 	std::string outputFilename;
 	std::string inputFilename;
-
-	// For printing enums
-	// const char * TopMetalReadoutModeChar[] = {
-	// 	"FullReadout",
-	// 	"SinglePixel"
-	// };
-
-	// const char * DigitizerTriggerModesChar[] = 
-	// {
-	// 	"Continous",
-	// 	"HardwareTrigger",
-	// 	"SoftwareTrigger"
-	// };
-
 
 };
 

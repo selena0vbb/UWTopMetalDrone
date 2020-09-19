@@ -1,11 +1,11 @@
 // Standard headers
 #include <vector>
+#include <string>
 #include <iostream>
+#include <fstream>
 
-// xml parsing headers
+// Utility headers
 #include "tinyxml2.h"
-
-// Command line interface header
 #include "CLI11.hpp"
 
 // Custom headers
@@ -19,11 +19,11 @@ int main(int argc, char const *argv[])
 	CLI::App topMetalDroneParser{"UW Top Metal II- Drone Controller"};
 
 	// command line input variables
-	std::string infile = "topMetalConfig.xml";
-
+	std::string infile  = "topMetalConfig.xml";
+	std::string outfile = "";
 	// define command line arguments
 	topMetalDroneParser.add_option("-c, --config", infile, "Top Metal Drone Config file (xml)")->check(CLI::ExistingFile);
-
+	topMetalDroneParser.add_option("-o, --output", outfile, "Output file name");
 	// parse command line arguments
 	try{
 		topMetalDroneParser.parse(argc, argv);
@@ -36,6 +36,11 @@ int main(int argc, char const *argv[])
 	std::cout << "Starting UW Top Metal II- Drone Controller\n";
 	TopMetalDroneConfig config;
 	bool configSucces = config.ReadConfigFile(infile);
+
+	// Command line output file (if provided) supercedes config output filename
+	if(!outfile.empty()) config.SetOutputFilename(outfile);
+
+
 	if(configSucces) config.PrintConfigSettings();
 
 
@@ -46,16 +51,25 @@ int main(int argc, char const *argv[])
 	digitizer.ConfigureDigitizer();
 	digitizer.StartDataAcquisition();
 
-	// Test some readout and software trigger
-	for(int i=0; i < 20; i++){
+	// // Test some readout and software trigger
+	// for(int i=0; i < 20; i++){
 	
-	digitizer.SendSWTrigger();
-//	leep(30);
-	}
 	// digitizer.SendSWTrigger();
+	// }
+
+	std::cout << "Recording data....\n";
+	sleep(1);
+	std::cout << "Transfer data....\n";
 	// digitizer.SendSWTrigger();
+	// usleep(1000);
 	digitizer.TransferData();
 
+	// Open file handler
+	std::ofstream wf(config.GetOutputFilename(), std::ios::out | std::ios::binary);
+	if(!wf) {
+      std::cout << "Cannot open file!" << std::endl;
+      return 1;
+   }
 	// Get event info
 	CAEN_DGTZ_EventInfo_t eventInfo;
 	for(int i=0; i<digitizer.GetNumberOfEventsRead(); i++){
@@ -69,13 +83,20 @@ int main(int argc, char const *argv[])
 		double mean = 0;
 		for(int j=0; j < test->ChSize[0]; j++){
 			mean += test->DataChannel[0][j];
+			// std::cout << test->DataChannel[0][j] << "\n";
+			wf << test->DataChannel[0][j] << "\n";
+			// wf.write((char*) &test->DataChannel[0][j], sizeof(short));
 		}
+
 		mean /= test->ChSize[0];
 		std::cout << "Mean ADU: " << mean;	
 		std::cout << "\n";
 	        CAEN_DGTZ_FreeEvent(digitizer.GetBoardAddress(), &eventBuffer);
 	}
+	wf.close();
 	
 	std::cout << "Number of Events: " << digitizer.GetNumberOfEventsRead() << std::endl;
+	
+
 	return 0;
 }
