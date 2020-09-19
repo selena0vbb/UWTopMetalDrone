@@ -53,15 +53,18 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
 
 	// Configure Trigger and acquisition settings depending on the settings file
+	uint32_t channelMask = 1;
+
 	switch(triggerMode){
 		case Continuous:
 			break;
 		case SelfTrigger:
 
-			err = CAEN_DGTZ_SetChannelSelfTrigger(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY, 1);
-			err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, 1, triggerPolarity);
-			err = CAEN_DGTZ_SetTriggerPolarity(boardAddr, 1, static_cast<CAEN_DGTZ_TriggerPolarity_t> (triggerPolarity));
-			err = CAEN_DGTZ_SetChannelTriggerThreshold(boardAddr, 1, triggerThreshold);
+			err = CAEN_DGTZ_SetChannelSelfTrigger(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY, channelMask);
+			err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, 0, triggerPolarity);
+			err = CAEN_DGTZ_SetTriggerPolarity(boardAddr, 0, static_cast<CAEN_DGTZ_TriggerPolarity_t> (triggerPolarity));
+			err = CAEN_DGTZ_SetChannelTriggerThreshold(boardAddr, 0, triggerThreshold);
+
 			break;
 		case SoftwareTrigger:
 			err = CAEN_DGTZ_SetSWTriggerMode(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY);

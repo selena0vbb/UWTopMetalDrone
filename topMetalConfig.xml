@@ -27,13 +27,13 @@
 	- dcOffset : negative offset to the dynamic range 0-Vpp. Must be in range of 0-65535 (16 bit number)
 		-->
 <digitizer 
-   samplingRate="100" 
-   nSamplesPerTrigger="4096"
-   nPreTriggerSamples="1000"
-   maxNumberEventsTransferred="4"  
+   samplingRate="5" 
+   nSamplesPerTrigger="640000"
+   nPreTriggerSamples="50"
+   maxNumberEventsTransferred="1"  
    triggerPolarity="1"
-   triggerThreshold="7000"
-   triggerMode="2"
+   triggerThreshold="13000"
+   triggerMode="1"
    dcOffset="0"
    numberOfBoards="1"
 />
@@ -56,5 +56,5 @@
 	-filename : name of output file
  -->
 <output
-	filename="test.txt"
+	filename="test_6250khz_pixel_scan.dat"
 />
