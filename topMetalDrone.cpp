@@ -57,12 +57,10 @@ int main(int argc, char const *argv[])
 	// digitizer.SendSWTrigger();
 	// }
 
-	std::cout << "Recording data....\n";
-	sleep(1);
-	std::cout << "Transfer data....\n";
-	// digitizer.SendSWTrigger();
-	// usleep(1000);
-	digitizer.TransferData();
+	int eventTransferredCounter = 0;
+	// while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
+		
+	// }
 
 	// Open file handler
 	std::ofstream wf(config.GetOutputFilename(), std::ios::out | std::ios::binary);
@@ -72,26 +70,34 @@ int main(int argc, char const *argv[])
    }
 	// Get event info
 	CAEN_DGTZ_EventInfo_t eventInfo;
-	for(int i=0; i<digitizer.GetNumberOfEventsRead(); i++){
-		char * evtptr = digitizer.GetEventPtr();
-		void * eventBuffer = digitizer.GetEventBuffer();
-		
-		CAEN_DGTZ_GetEventInfo(digitizer.GetBoardAddress(), digitizer.GetBuffer(), digitizer.GetReadoutSize(), i, &eventInfo, &evtptr);
-		std::cout << "EventCounter: " << eventInfo.EventCounter << "\t  ";
-		CAEN_DGTZ_DecodeEvent(digitizer.GetBoardAddress(), evtptr, &eventBuffer);
-		CAEN_DGTZ_UINT16_EVENT_t * test = static_cast<	CAEN_DGTZ_UINT16_EVENT_t * >(eventBuffer);
-		double mean = 0;
-		for(int j=0; j < test->ChSize[0]; j++){
-			mean += test->DataChannel[0][j];
-			// std::cout << test->DataChannel[0][j] << "\n";
-			wf << test->DataChannel[0][j] << "\n";
-			// wf.write((char*) &test->DataChannel[0][j], sizeof(short));
-		}
+	while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
+		usleep(5000);
+		digitizer.TransferData();
+		eventTransferredCounter += digitizer.GetNumberOfEventsRead();
 
-		mean /= test->ChSize[0];
-		std::cout << "Mean ADU: " << mean;	
-		std::cout << "\n";
+		for (int i = 0; i < digitizer.GetNumberOfEventsRead(); ++i)
+		{
+			char * evtptr = digitizer.GetEventPtr();
+			void * eventBuffer = digitizer.GetEventBuffer();
+			
+			CAEN_DGTZ_GetEventInfo(digitizer.GetBoardAddress(), digitizer.GetBuffer(), digitizer.GetReadoutSize(), i, &eventInfo, &evtptr);
+			std::cout << "EventCounter: " << eventInfo.EventCounter << "\t  ";
+			CAEN_DGTZ_DecodeEvent(digitizer.GetBoardAddress(), evtptr, &eventBuffer);
+			CAEN_DGTZ_UINT16_EVENT_t * test = static_cast<	CAEN_DGTZ_UINT16_EVENT_t * >(eventBuffer);
+			double mean = 0;
+			for(int j=0; j < test->ChSize[0]; j++){
+				mean += test->DataChannel[0][j];
+				// std::cout << test->DataChannel[0][j] << "\n";
+				wf << test->DataChannel[0][j] << "\n";
+				// wf.write((char*) &test->DataChannel[0][j], sizeof(short));
+			}
+
+			mean /= test->ChSize[0];
+			std::cout << "Mean ADU: " << mean;	
+			std::cout << "\n";
 	        CAEN_DGTZ_FreeEvent(digitizer.GetBoardAddress(), &eventBuffer);
+		}
+		
 	}
 	wf.close();
 	
