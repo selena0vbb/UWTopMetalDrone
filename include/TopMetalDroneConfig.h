@@ -27,7 +27,7 @@ struct CaenDigitizerSettings
 {
 	double samplingRate; // MHz
 	int nSamplesPerTrigger;
-	int nPreTriggerSamples;
+	double postTriggerFraction;
 	int maxNumberEventsTransferred;
 	int triggerPolarity;
 	int triggerThreshold;

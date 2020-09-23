@@ -75,14 +75,8 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		parseSuccess = false;
 	}
 
-	if( digitizerSettingElement->QueryIntAttribute("nPreTriggerSamples", &digitizerSettings.nPreTriggerSamples) != 0){
-		PrintMissingElement("digitizer:nPreTriggerSamples");
-		parseSuccess = false;
-	}
-
-	// Verify nPreTrigger samples is < nSamples
-	if ( digitizerSettings.nPreTriggerSamples >= digitizerSettings.nSamplesPerTrigger){
-		std::cout << FRED("nPreTriggerSamples must be less than nSamplesPerTrigger. Parsing failed.");
+	if( digitizerSettingElement->QueryDoubleAttribute("postTriggerFraction", &digitizerSettings.postTriggerFraction) != 0){
+		PrintMissingElement("digitizer:postTriggerFraction");
 		parseSuccess = false;
 	}
 
@@ -173,7 +167,7 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 	std::cout << "Digitizer Settings\n";
 	std::cout << "\tSampling Rate (MHz): " 	  	 << digitizerSettings.samplingRate 		            			 << "\n";
 	std::cout << "\tNumber of Samples Per Trigger: " << digitizerSettings.nSamplesPerTrigger 					 << "\n";
-	std::cout << "\tNumber of Pre Trigger Samples: " << digitizerSettings.nPreTriggerSamples 					 << "\n";
+	std::cout << "\tFraction of Waveform Post Trigger: " << digitizerSettings.postTriggerFraction 					 << "\n";
 	std::cout << "\tTrigger Mode: "                  << DigitizerTriggerModesChar[digitizerSettings.triggerMode]                     << "\n";
 	std::cout << "\tTrigger Threshold: "             << digitizerSettings.triggerThreshold   					 << "\n";
 	std::cout << "\tTrigger Polarity: "              << digitizerSettings.triggerPolarity 						 << "\n";

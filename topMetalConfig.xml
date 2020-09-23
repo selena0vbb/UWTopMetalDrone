@@ -15,7 +15,7 @@
 <!-- Digitizer Settigns
 	- samplingRate : in MHz
 	- nSamplesPerTrigger : number of samples to save on a trigger
-	- nPreTriggerSamples : number of points before the trigger to keep. Must be <nSamplesPerTrigger
+	- postTriggerFraction : fraction of the total waveform to be after the trigger. Between 0 and 1
 	- maxNumberEventsTransferred : when reading events off the digitizer, this is the maximum number of events transferred at once
 	- triggerPolarity : self trigger on rising (0) or falling (1) edge of signal
 	- triggerTheshold : threshold above (below) which the channel triggers in self trigger mode (ADU) 
@@ -29,8 +29,8 @@
 <digitizer 
    samplingRate="5" 
    nSamplesPerTrigger="640000"
-   nPreTriggerSamples="50"
-   maxNumberEventsTransferred="1"  
+   postTriggerFraction="0.99"
+   maxNumberEventsTransferred="100"  
    triggerPolarity="1"
    triggerThreshold="13000"
    triggerMode="1"

@@ -15,7 +15,7 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 
 	nboards = digitizerSettings.numberOfBoards;
 	nSamplesPerTrigger = digitizerSettings.nSamplesPerTrigger;
-	nPreTriggerSamples = digitizerSettings.nPreTriggerSamples;
+	postTriggerFraction = digitizerSettings.postTriggerFraction;
 	triggerMode = digitizerSettings.triggerMode;
 	triggerThreshold = digitizerSettings.triggerThreshold;
 	triggerPolarity  = static_cast<CAEN_DGTZ_PulsePolarity_t> (digitizerSettings.triggerPolarity);
@@ -46,6 +46,7 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	// Congifure board with settings
 	err = CAEN_DGTZ_Reset(boardAddr); 
 	err = CAEN_DGTZ_SetRecordLength(boardAddr, nSamplesPerTrigger);
+	err = CAEN_DGTZ_SetPostTriggerSize(boardAddr, (uint32_t) (postTriggerFraction * 100) );
 	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, 1);
 	err = CAEN_DGTZ_SetMaxNumEventsBLT(boardAddr, maxNumberEventsTransferred);
 	err = CAEN_DGTZ_SetAcquisitionMode(boardAddr, CAEN_DGTZ_SW_CONTROLLED);

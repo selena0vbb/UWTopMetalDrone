@@ -43,7 +43,7 @@ private:
 
 	// Sample settings
 	int nSamplesPerTrigger;
-	int nPreTriggerSamples;
+	double postTriggerFraction;
 	int maxNumberOfEventsPerTransfer = 1;
 
 	// Trigger settings
