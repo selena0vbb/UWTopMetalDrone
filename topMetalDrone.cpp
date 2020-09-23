@@ -71,7 +71,7 @@ int main(int argc, char const *argv[])
 	// Get event info
 	CAEN_DGTZ_EventInfo_t eventInfo;
 	while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
-		usleep(5000);
+		usleep(2000);
 		digitizer.TransferData();
 		eventTransferredCounter += digitizer.GetNumberOfEventsRead();
 
@@ -85,11 +85,14 @@ int main(int argc, char const *argv[])
 			CAEN_DGTZ_DecodeEvent(digitizer.GetBoardAddress(), evtptr, &eventBuffer);
 			CAEN_DGTZ_UINT16_EVENT_t * test = static_cast<	CAEN_DGTZ_UINT16_EVENT_t * >(eventBuffer);
 			double mean = 0;
+			int waveformDownsamplingRate = config.GetWaveformDownsamplingRate();
 			for(int j=0; j < test->ChSize[0]; j++){
-				mean += test->DataChannel[0][j];
-				// std::cout << test->DataChannel[0][j] << "\n";
-				wf << test->DataChannel[0][j] << "\n";
-				// wf.write((char*) &test->DataChannel[0][j], sizeof(short));
+				if (j % waveformDownsamplingRate == 0)
+				{
+					mean += test->DataChannel[0][j];
+					wf << test->DataChannel[0][j] << "\n";
+				}
+				
 			}
 
 			mean /= test->ChSize[0];

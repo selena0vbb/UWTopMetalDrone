@@ -148,6 +148,11 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		parseSuccess = false;
 	}
 
+	if( outputSettingElement->QueryIntAttribute("waveformDownsample", &waveformDownsample) != 0){
+		PrintMissingElement("output:waveformDownsample");
+		parseSuccess = false;
+	}
+
 
 
 
@@ -183,5 +188,6 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 	// Output settings
 	std::cout << "Output Settings\n";
 	std::cout << "\tOutput filename: " << outputFilename << "\n";
+	std::cout << "\tWaveform Downsampling Factor: " << waveformDownsample << "\n";
 }
 

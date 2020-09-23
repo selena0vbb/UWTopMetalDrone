@@ -57,7 +57,7 @@ private:
 	char * evtptr = NULL; // Need to be initialized to null
 	void * eventBuffer = NULL;
 	uint32_t bufferSize, readoutSize;
-        uint32_t numberEventsRead = 0;
+    uint32_t numberEventsRead = 0;
 	uint16_t acquisitionDCOffset;
 
 	// Misc Settings

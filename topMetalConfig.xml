@@ -56,5 +56,6 @@
 	-filename : name of output file
  -->
 <output
-	filename="test_6250khz_pixel_scan.dat"
+	waveformDownsample="2"
+	filename="test_trigger_pos2.dat"
 />

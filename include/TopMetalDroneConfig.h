@@ -60,6 +60,7 @@ public:
 	int GetReadoutMode() { return readOutMode; };
 	CaenDigitizerSettings & GetDigitizerSettings() { return digitizerSettings; };
 	std::string GetOutputFilename() { return outputFilename; };
+	int GetWaveformDownsamplingRate() { return waveformDownsample; };
 	
 	// Setters
 	// Most setters are controlled by the config file. CLI gives options for overriding some values
@@ -78,6 +79,7 @@ private:
 
 	// Output file
 	std::string outputFilename;
+	int waveformDownsample;
 	std::string inputFilename;
 
 };
