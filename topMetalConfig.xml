@@ -27,7 +27,7 @@
 	- dcOffset : negative offset to the dynamic range 0-Vpp. Must be in range of 0-65535 (16 bit number)
 		-->
 <digitizer 
-   samplingRate="5" 
+   samplingRate="500" 
    nSamplesPerTrigger="640000"
    postTriggerFraction="0.99"
    maxNumberEventsTransferred="100"  
@@ -57,5 +57,5 @@
  -->
 <output
 	waveformDownsample="2"
-	filename="test_trigger_pos2.dat"
+	filename="full_pixel_6250khzscan_250Mhzsamping_csavref680_vref850.dat"
 />

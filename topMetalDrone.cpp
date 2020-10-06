@@ -65,9 +65,9 @@ int main(int argc, char const *argv[])
 	// Open file handler
 	std::ofstream wf(config.GetOutputFilename(), std::ios::out | std::ios::binary);
 	if(!wf) {
-      std::cout << "Cannot open file!" << std::endl;
-      return 1;
-   }
+	      std::cout << "Cannot open file!" << std::endl;
+	      return 1;
+	   }
 	// Get event info
 	CAEN_DGTZ_EventInfo_t eventInfo;
 	while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
