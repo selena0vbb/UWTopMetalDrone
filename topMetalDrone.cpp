@@ -12,18 +12,24 @@
 #include "TopMetalDroneConfig.h"
 #include "TopMetalDigitizer.h"
 
+// Define constants
+const int npx = 72;
+const int npy = 72;
 
 int main(int argc, char const *argv[])
 {
 	
+
 	CLI::App topMetalDroneParser{"UW Top Metal II- Drone Controller"};
 
 	// command line input variables
 	std::string infile  = "topMetalConfig.xml";
 	std::string outfile = "";
+
 	// define command line arguments
 	topMetalDroneParser.add_option("-c, --config", infile, "Top Metal Drone Config file (xml)")->check(CLI::ExistingFile);
 	topMetalDroneParser.add_option("-o, --output", outfile, "Output file name");
+
 	// parse command line arguments
 	try{
 		topMetalDroneParser.parse(argc, argv);
@@ -51,17 +57,18 @@ int main(int argc, char const *argv[])
 	digitizer.ConfigureDigitizer();
 	digitizer.StartDataAcquisition();
 
-	// // Test some readout and software trigger
-	// for(int i=0; i < 20; i++){
+
+
+	/*
+	  Compute median and mad image if necessary
+	*/
+
+	// Define array size
+	double medianImage[npx][npy], madImage[npx][npy];
+	uint16_t * referenceImageRaw = new uint16_t[npx * npy * config.GetNumberFramesInReferenceImage()];
+	delete referenceImageRaw;
 	
-	// digitizer.SendSWTrigger();
-	// }
-
 	int eventTransferredCounter = 0;
-	// while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
-		
-	// }
-
 	// Open file handler
 	std::ofstream wf(config.GetOutputFilename(), std::ios::out | std::ios::binary);
 	if(!wf) {
@@ -95,7 +102,7 @@ int main(int argc, char const *argv[])
 				
 			}
 
-			mean /= test->ChSize[0];
+			mean /= (test->ChSize[0] / waveformDownsamplingRate);
 			std::cout << "Mean ADU: " << mean;	
 			std::cout << "\n";
 	        CAEN_DGTZ_FreeEvent(digitizer.GetBoardAddress(), &eventBuffer);

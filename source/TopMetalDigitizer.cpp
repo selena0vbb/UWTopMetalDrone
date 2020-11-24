@@ -1,6 +1,9 @@
 #include "TopMetalDigitizer.h"
 #include "CAENDigitizer.h"
 
+#include <typeinfo>
+
+
 TopMetalDigitizer::TopMetalDigitizer(){
 	/*
 		Creates a digitizer object with default configuration.
@@ -15,6 +18,7 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 
 	nboards = digitizerSettings.numberOfBoards;
 	nSamplesPerTrigger = digitizerSettings.nSamplesPerTrigger;
+	useExternalClock = digitizerSettings.useExternalClock;
 	postTriggerFraction = digitizerSettings.postTriggerFraction;
 	triggerMode = digitizerSettings.triggerMode;
 	triggerThreshold = digitizerSettings.triggerThreshold;
@@ -43,6 +47,16 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	// Get Board info
 	err = CAEN_DGTZ_GetInfo(boardAddr, &boardInformation);
 
+	// Clock source for data acquisition
+	uint32_t clockRegister;
+	err = CAEN_DGTZ_ReadRegister(boardAddr, 0x8100, &clockRegister);
+	if((clockRegister/64)%2==0 == useExternalClock) // Check if current state is desired state. If not change bit 6
+	{
+	  clockRegister += (uint32_t)64; // set bit 6 to 1.
+	}
+	err = CAEN_DGTZ_WriteRegister(boardAddr, 0x8100, clockRegister);
+	if (verbose) std :: cout << "Writing clock source register...\t\tStatus: " << err << "\n";
+
 	// Congifure board with settings
 	err = CAEN_DGTZ_Reset(boardAddr); 
 	err = CAEN_DGTZ_SetRecordLength(boardAddr, nSamplesPerTrigger);
@@ -52,6 +66,8 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	err = CAEN_DGTZ_SetAcquisitionMode(boardAddr, CAEN_DGTZ_SW_CONTROLLED);
 	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, 1, acquisitionDCOffset);
 	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
+
+	
 
 	// Configure Trigger and acquisition settings depending on the settings file
 	uint32_t channelMask = 1;

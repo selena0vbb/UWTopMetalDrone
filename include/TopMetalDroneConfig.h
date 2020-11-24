@@ -17,8 +17,9 @@ enum DigitizerTriggerModes
 
 enum TopMetalReadoutMode
 {
-	FullReadout,
-	SinglePixel
+	SinglePixel,
+	FullReadoutWaveform,
+	FullReadoutAverage
 };
 
 
@@ -34,6 +35,7 @@ struct CaenDigitizerSettings
 	DigitizerTriggerModes triggerMode;
 	uint16_t acquisitionDCOffset;
 	int numberOfBoards;
+	int useExternalClock;
 };
 
 struct TopMetalFPGASettings
@@ -59,8 +61,10 @@ public:
 	// Getters
 	int GetReadoutMode() { return readOutMode; };
 	CaenDigitizerSettings & GetDigitizerSettings() { return digitizerSettings; };
+	TopMetalFPGASettings  & GetTopMetalFPGASettings() { return fpgaSettings; };
 	std::string GetOutputFilename() { return outputFilename; };
 	int GetWaveformDownsamplingRate() { return waveformDownsample; };
+	int GetNumberFramesInReferenceImage() { return numberFramesInReferenceImage; };
 	
 	// Setters
 	// Most setters are controlled by the config file. CLI gives options for overriding some values
@@ -70,6 +74,7 @@ private:
 
 	// General
 	TopMetalReadoutMode readOutMode;
+	int numberFramesInReferenceImage;
 
 	// Digitizer
 	CaenDigitizerSettings digitizerSettings;

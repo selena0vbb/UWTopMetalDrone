@@ -23,6 +23,8 @@ public:
 	uint16_t GetAcquisitionDCOffset() { return acquisitionDCOffset; };
 	uint32_t GetBufferSize() { return bufferSize; };
 	uint32_t GetReadoutSize() { return readoutSize; };
+
+	// Utility functions
 	
 	// CAEN Digitizer wrapper functions
 	CAEN_DGTZ_ErrorCode ConfigureDigitizer();
@@ -45,6 +47,7 @@ private:
 	int nSamplesPerTrigger;
 	double postTriggerFraction;
 	int maxNumberOfEventsPerTransfer = 1;
+	uint32_t useExternalClock;
 
 	// Trigger settings
 	DigitizerTriggerModes triggerMode;
@@ -59,6 +62,9 @@ private:
 	uint32_t bufferSize, readoutSize;
     uint32_t numberEventsRead = 0;
 	uint16_t acquisitionDCOffset;
+
+	// Relevant Register address
+	const uint32_t ClockSourceAddress = 0x8100;
 
 	// Misc Settings
 	int verbose = 0;
