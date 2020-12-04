@@ -3,21 +3,30 @@
 <!-- General Settings 
 	- readOutMode : 
 		- 0 : for single pixel operation
-		- 1 : for full pixel detector 
+		- 1 : for full pixel detector storing full waveform
+		- 2 : average of each pixel of each frame
+	- numberFramesInReferenceImage : number of frames to take the median of to get the baseline of each reference 
+	- pixelScaneRate : MHz
 
 --> 
 <general 
-	readOutMode="1" 
+	readOutMode="2" 
+	numberFramesInReferenceImage="100"
+	pixelScanRate="10"
 />
 
 
 
 <!-- Digitizer Settigns
 	- samplingRate : in MHz
+	- pixelScanRate : in MHz
 	- nSamplesPerTrigger : number of samples to save on a trigger
 	- postTriggerFraction : fraction of the total waveform to be after the trigger. Between 0 and 1
 	- maxNumberEventsTransferred : when reading events off the digitizer, this is the maximum number of events transferred at once
 	- triggerPolarity : self trigger on rising (0) or falling (1) edge of signal
+	- useExternalClock : use and external or internal clock to syncronize data acquisition
+		- 0 : use internal oscillator
+		- 1 : use external clock. MUST be 50 MHz
 	- triggerTheshold : threshold above (below) which the channel triggers in self trigger mode (ADU) 
 	- triggerMode : 
 		- 0 : no trigger, continous readout
@@ -27,13 +36,15 @@
 	- dcOffset : negative offset to the dynamic range 0-Vpp. Must be in range of 0-65535 (16 bit number)
 		-->
 <digitizer 
-   samplingRate="500" 
+   samplingRate="500"
+   pixelScanRate="10" 
    nSamplesPerTrigger="640000"
-   postTriggerFraction="0.99"
-   maxNumberEventsTransferred="100"  
+   postTriggerFraction="1"
+   maxNumberEventsTransferred="1" 
+   useExternalClock="1" 
    triggerPolarity="1"
    triggerThreshold="13000"
-   triggerMode="1"
+   triggerMode="2"
    dcOffset="0"
    numberOfBoards="1"
 />
@@ -56,6 +67,6 @@
 	-filename : name of output file
  -->
 <output
-	waveformDownsample="2"
-	filename="full_pixel_6250khzscan_250Mhzsamping_csavref680_vref850.dat"
+	waveformDownsample="1"
+	filename="test-clock-syncronization-intern-test.dat"
 />

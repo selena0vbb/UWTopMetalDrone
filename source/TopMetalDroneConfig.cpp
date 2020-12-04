@@ -58,6 +58,11 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 	} 
 	readOutMode = static_cast<TopMetalReadoutMode>(intReadOutMode);
 
+	if( generalSettingElement->QueryIntAttribute("numberFramesInReferenceImage", &numberFramesInReferenceImage) != 0 ){
+		PrintMissingElement("general:numberFramesInReferenceImage");
+		parseSuccess = false;
+	}
+
 	// Digitizer settings
 	tinyxml2::XMLElement * digitizerSettingElement = configXML.FirstChildElement("digitizer");
 	if( digitizerSettingElement == 0 ){
@@ -82,6 +87,11 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 
 	if( digitizerSettingElement->QueryIntAttribute("maxNumberEventsTransferred", &digitizerSettings.maxNumberEventsTransferred) != 0) {
 		PrintMissingElement("digitizer:maxNumberEventsTransferred");
+		parseSuccess = false;
+	}
+
+	if( digitizerSettingElement->QueryIntAttribute("useExternalClock", &digitizerSettings.useExternalClock) != 0){
+		PrintMissingElement("digitizer:useExternalClock");
 		parseSuccess = false;
 	}
 
@@ -167,6 +177,7 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 	std::cout << "General Settings\n";
 	std::cout << "\tConfiguration Filename: " << inputFilename 						  << "\n";
 	std::cout << "\tReadout Mode: " 		  << TopMetalReadoutModeChar[readOutMode] << "\n";
+	std::cout << "\tNumber of Frames in Reference Image: " << numberFramesInReferenceImage << "\n";
 
 	// Digitizer Settings
 	std::cout << "Digitizer Settings\n";
