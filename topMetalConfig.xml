@@ -40,11 +40,11 @@
    pixelScanRate="10" 
    nSamplesPerTrigger="640000"
    postTriggerFraction="1"
-   maxNumberEventsTransferred="1" 
+   maxNumberEventsTransferred="100" 
    useExternalClock="1" 
    triggerPolarity="1"
-   triggerThreshold="13000"
-   triggerMode="2"
+   triggerThreshold="13500"
+   triggerMode="1"
    dcOffset="0"
    numberOfBoards="1"
 />
@@ -67,6 +67,6 @@
 	-filename : name of output file
  -->
 <output
-	waveformDownsample="1"
-	filename="test-clock-syncronization-intern-test.dat"
+	waveformDownsample="2"
+	filename="/home/selena/data/top-metal-chip-1/HV/topmetal-chip-1-hv-test-2kV-10.dat"
 />

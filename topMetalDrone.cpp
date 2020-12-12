@@ -78,7 +78,10 @@ int main(int argc, char const *argv[])
 	// Get event info
 	CAEN_DGTZ_EventInfo_t eventInfo;
 	while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
-		usleep(2000);
+	// digitizer.SendSWTrigger();
+	// std::cout<<"software trigger sent"<<std::endl;
+		usleep(20000);
+	// std::cout<<"download data"<<std::endl;
 		digitizer.TransferData();
 		eventTransferredCounter += digitizer.GetNumberOfEventsRead();
 
