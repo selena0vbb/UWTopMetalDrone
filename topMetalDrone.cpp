@@ -100,10 +100,11 @@ int main(int argc, char const *argv[])
 				if (j % waveformDownsamplingRate == 0)
 				{
 					mean += test->DataChannel[0][j];
-					wf << test->DataChannel[0][j] << "\n";
 				}
 				
 			}
+			wf.write((char *)test->DataChannel[0], sizeof(uint16_t)*test->ChSize[0] );
+
 
 			mean /= (test->ChSize[0] / waveformDownsamplingRate);
 			std::cout << "Mean ADU: " << mean;	
