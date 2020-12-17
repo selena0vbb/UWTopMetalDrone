@@ -44,7 +44,7 @@
    useExternalClock="1" 
    triggerPolarity="1"
    triggerThreshold="13500"
-   triggerMode="1"
+   triggerMode="2"
    dcOffset="0"
    numberOfBoards="1"
 />
