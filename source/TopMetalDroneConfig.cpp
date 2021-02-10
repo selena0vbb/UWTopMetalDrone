@@ -10,7 +10,8 @@ const char * DigitizerTriggerModesChar[] =
 {
 	"Continous",
 	"HardwareTrigger",
-	"SoftwareTrigger"
+	"SoftwareTrigger",
+	"ExternalTrigger"
 };
 
 TopMetalDroneConfig::TopMetalDroneConfig(const std::string &configFilename){

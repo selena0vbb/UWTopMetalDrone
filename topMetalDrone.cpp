@@ -82,7 +82,7 @@ int main(int argc, char const *argv[])
 		// Depending on trigger type, send SW trigger or not
 		if(config.GetDigitizerSettings().triggerMode == SoftwareTrigger) digitizer.SendSWTrigger();
 
-		usleep(20000);
+		// usleep(20000);
 		digitizer.TransferData();
 		eventTransferredCounter += digitizer.GetNumberOfEventsRead();
 

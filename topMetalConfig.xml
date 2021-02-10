@@ -10,7 +10,7 @@
 
 --> 
 <general 
-	readOutMode="2" 
+	readOutMode="1" 
 	numberFramesInReferenceImage="100"
 	pixelScanRate="10"
 />
@@ -40,12 +40,12 @@
    pixelScanRate="10" 
    nSamplesPerTrigger="640000"
    postTriggerFraction="1"
-   maxNumberEventsTransferred="100" 
+   maxNumberEventsTransferred="5" 
    useExternalClock="1" 
-   triggerPolarity="1"
-   triggerThreshold="13500"
-   triggerMode="2"
-   dcOffset="0"
+   triggerPolarity="0"
+   triggerThreshold="10000"
+   triggerMode="3"
+   dcOffset="65000"
    numberOfBoards="1"
 />
 
@@ -67,6 +67,6 @@
 	-filename : name of output file
  -->
 <output
-	waveformDownsample="2"
+	waveformDownsample="1"
 	filename="/home/selena/data/top-metal-chip-1/HV/topmetal-chip-1-hv-test-2kV-10.dat"
 />

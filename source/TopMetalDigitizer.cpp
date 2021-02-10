@@ -45,6 +45,8 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	err = CAEN_DGTZ_OpenDigitizer(CAEN_DGTZ_USB, 0, 0, 0, &boardAddr);
 	if (verbose) std::cout << "Opening communication with digitizer...\t\tStatus: " << err << "\n";
 	// Get Board info
+	err = CAEN_DGTZ_Reset(boardAddr); 
+
 	err = CAEN_DGTZ_GetInfo(boardAddr, &boardInformation);
 
 	// Clock source for data acquisition
@@ -58,16 +60,16 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	if (verbose) std :: cout << "Writing clock source register...\t\tStatus: " << err << "\n";
 
 	// Congifure board with settings
-	err = CAEN_DGTZ_Reset(boardAddr); 
 	err = CAEN_DGTZ_SetRecordLength(boardAddr, nSamplesPerTrigger);
 	err = CAEN_DGTZ_SetPostTriggerSize(boardAddr, (uint32_t) (postTriggerFraction * 100) );
 	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, 1);
 	err = CAEN_DGTZ_SetMaxNumEventsBLT(boardAddr, maxNumberEventsTransferred);
 	err = CAEN_DGTZ_SetAcquisitionMode(boardAddr, CAEN_DGTZ_SW_CONTROLLED);
-	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, 1, acquisitionDCOffset);
-	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
-
+	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, 0, acquisitionDCOffset);
+	err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, 0, triggerPolarity);
+	err = CAEN_DGTZ_SetIOLevel(boardAddr, CAEN_DGTZ_IOLevel_TTL); // Set the front panel inputs to accept TTL signals
 	
+	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
 
 	// Configure Trigger and acquisition settings depending on the settings file
 	uint32_t channelMask = 1;
@@ -88,6 +90,13 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 			break;
 		case ExternalTrigger:
 			err = CAEN_DGTZ_SetExtTriggerInputMode(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY);
+			// uint32_t triggerRegister;
+			// err = CAEN_DGTZ_ReadRegister(boardAddr, 0x810C, &triggerRegister);
+			// err = CAEN_DGTZ_WriteRegister(boardAddr, 0x810C, 1073741824);
+			// err = CAEN_DGTZ_ReadRegister(boardAddr, 0x810C, &triggerRegister);
+
+
+			// std::cout << triggerRegister << std::endl;
 			break;
 	}
 	if (verbose) std::cout << "Configure trigger settings...\t\tStatus: " << err << "\n";
