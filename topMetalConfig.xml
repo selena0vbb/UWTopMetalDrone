@@ -17,7 +17,8 @@
 
 
 
-<!-- Digitizer Settigns
+<!-- Digitizer Settings
+	- channel : number from 0 to 7 (only supports data off of one channel for now)
 	- samplingRate : in MHz
 	- pixelScanRate : in MHz
 	- nSamplesPerTrigger : number of samples to save on a trigger
@@ -36,16 +37,17 @@
 	- dcOffset : negative offset to the dynamic range 0-Vpp. Must be in range of 0-65535 (16 bit number)
 		-->
 <digitizer 
+   channel="0"
    samplingRate="500"
    pixelScanRate="10" 
    nSamplesPerTrigger="640000"
-   postTriggerFraction="1"
-   maxNumberEventsTransferred="5" 
-   useExternalClock="1" 
+   postTriggerFraction="0.95"
+   maxNumberEventsTransferred="50" 
+   useExternalClock="0" 
    triggerPolarity="0"
-   triggerThreshold="10000"
-   triggerMode="3"
-   dcOffset="65000"
+   triggerThreshold="8200"
+   triggerMode="1"
+   dcOffset="32768"
    numberOfBoards="1"
 />
 

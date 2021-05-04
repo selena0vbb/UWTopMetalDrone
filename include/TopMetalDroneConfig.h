@@ -26,6 +26,7 @@ enum TopMetalReadoutMode
 // Definition of structures containing data
 struct CaenDigitizerSettings
 {
+	int channel;
 	double samplingRate; // MHz
 	int nSamplesPerTrigger;
 	double postTriggerFraction;

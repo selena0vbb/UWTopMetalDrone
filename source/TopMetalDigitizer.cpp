@@ -2,6 +2,7 @@
 #include "CAENDigitizer.h"
 
 #include <typeinfo>
+#include <cmath>
 
 
 TopMetalDigitizer::TopMetalDigitizer(){
@@ -16,6 +17,7 @@ TopMetalDigitizer::TopMetalDigitizer(){
 
 TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 
+	channel = digitizerSettings.channel;
 	nboards = digitizerSettings.numberOfBoards;
 	nSamplesPerTrigger = digitizerSettings.nSamplesPerTrigger;
 	useExternalClock = digitizerSettings.useExternalClock;
@@ -60,19 +62,21 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	if (verbose) std :: cout << "Writing clock source register...\t\tStatus: " << err << "\n";
 
 	// Congifure board with settings
+	uint32_t channelMask;
+	channelMask = pow(2, channel);
 	err = CAEN_DGTZ_SetRecordLength(boardAddr, nSamplesPerTrigger);
 	err = CAEN_DGTZ_SetPostTriggerSize(boardAddr, (uint32_t) (postTriggerFraction * 100) );
-	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, 1);
+	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, channelMask);
 	err = CAEN_DGTZ_SetMaxNumEventsBLT(boardAddr, maxNumberEventsTransferred);
 	err = CAEN_DGTZ_SetAcquisitionMode(boardAddr, CAEN_DGTZ_SW_CONTROLLED);
-	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, 0, acquisitionDCOffset);
-	err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, 0, triggerPolarity);
+	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, channel, acquisitionDCOffset);
+	err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, channel, triggerPolarity);
 	err = CAEN_DGTZ_SetIOLevel(boardAddr, CAEN_DGTZ_IOLevel_TTL); // Set the front panel inputs to accept TTL signals
 	
 	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
 
 	// Configure Trigger and acquisition settings depending on the settings file
-	uint32_t channelMask = 1;
+
 
 	switch(triggerMode){
 		case Continuous:
