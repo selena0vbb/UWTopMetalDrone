@@ -71,6 +71,11 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		parseSuccess = false;
 	}
 
+	if( digitizerSettingElement->QueryIntAttribute("channel", &digitizerSettings.channel) != 0){
+		PrintMissingElement("digitizer:channel");
+		parseSuccess = false;
+	}
+
 	if( digitizerSettingElement->QueryDoubleAttribute("samplingRate", &digitizerSettings.samplingRate) != 0){
 		PrintMissingElement("digitizer:samplingRate");
 		parseSuccess = false;
@@ -182,6 +187,7 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 
 	// Digitizer Settings
 	std::cout << "Digitizer Settings\n";
+	std::cout << "\tChannel number: " 			 << digitizerSettings.channel 									 << "\n";
 	std::cout << "\tSampling Rate (MHz): " 	  	 << digitizerSettings.samplingRate 		            			 << "\n";
 	std::cout << "\tNumber of Samples Per Trigger: " << digitizerSettings.nSamplesPerTrigger 					 << "\n";
 	std::cout << "\tFraction of Waveform Post Trigger: " << digitizerSettings.postTriggerFraction 					 << "\n";

@@ -55,6 +55,7 @@ private:
 	int triggerThreshold; // in ADC
 
 	// Readout settings
+	int channel;
 	int maxNumberEventsTransferred;
 	char * buffer = NULL;
 	char * evtptr = NULL; // Need to be initialized to null
