@@ -19,7 +19,6 @@
 
 <!-- Digitizer Settings
 	- channel : number from 0 to 7 (only supports data off of one channel for now)
-	- samplingRate : in MHz
 	- pixelScanRate : in MHz
 	- nSamplesPerTrigger : number of samples to save on a trigger
 	- postTriggerFraction : fraction of the total waveform to be after the trigger. Between 0 and 1
@@ -37,19 +36,32 @@
 	- dcOffset : negative offset to the dynamic range 0-Vpp. Must be in range of 0-65535 (16 bit number)
 		-->
 <digitizer 
-   channel="0"
-   samplingRate="500"
    pixelScanRate="10" 
-   nSamplesPerTrigger="640000"
+   nSamplesPerTrigger="10000"
    postTriggerFraction="0.95"
-   maxNumberEventsTransferred="50" 
+   maxNumberEventsTransferred="2" 
    useExternalClock="0" 
    triggerPolarity="0"
    triggerThreshold="8200"
-   triggerMode="1"
-   dcOffset="32768"
+   triggerMode="2"
    numberOfBoards="1"
-/>
+>
+		<channel0 
+			number="0"
+			pulsePolarity="0"
+	   		dcOffset="32768"
+	   		isChannelTrigger="0"
+		/>
+		<channel1 
+			number="2"
+			pulsePolarity="0"
+	   		dcOffset="32768"
+	   		isChannelTrigger="1"
+
+		/>
+</digitizer>
+
+
 
 
 
@@ -70,5 +82,5 @@
  -->
 <output
 	waveformDownsample="1"
-	filename="/home/selena/data/top-metal-chip-1/HV/topmetal-chip-1-hv-test-2kV-10.dat"
+	filename="test.dat"
 />

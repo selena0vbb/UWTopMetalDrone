@@ -71,15 +71,10 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		parseSuccess = false;
 	}
 
-	if( digitizerSettingElement->QueryIntAttribute("channel", &digitizerSettings.channel) != 0){
-		PrintMissingElement("digitizer:channel");
-		parseSuccess = false;
-	}
-
-	if( digitizerSettingElement->QueryDoubleAttribute("samplingRate", &digitizerSettings.samplingRate) != 0){
-		PrintMissingElement("digitizer:samplingRate");
-		parseSuccess = false;
-	}
+	// if( digitizerSettingElement->QueryIntAttribute("channel", &digitizerSettings.channel) != 0){
+	// 	PrintMissingElement("digitizer:channel");
+	// 	parseSuccess = false;
+	// }
 
 	if( digitizerSettingElement->QueryIntAttribute("nSamplesPerTrigger", &digitizerSettings.nSamplesPerTrigger) != 0){
 		PrintMissingElement("digitizer:nSamplesPerTrigger");
@@ -118,17 +113,42 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 	}
 	digitizerSettings.triggerMode = static_cast<DigitizerTriggerModes>(intTriggerMode);
 
-	int intDCOffset = 0;
-	if( digitizerSettingElement->QueryIntAttribute("dcOffset", &intDCOffset) != 0){
-		PrintMissingElement("digitizer:dcOffset");
-		std::cout << "Falling back to default value of 0x0000\n";
-	}
-	digitizerSettings.acquisitionDCOffset = static_cast<uint16_t> (intDCOffset);
-
 
 	if( digitizerSettingElement->QueryIntAttribute("numberOfBoards", &digitizerSettings.numberOfBoards) != 0){
 		PrintMissingElement("digitizer:numberOfBoards");
 		parseSuccess = false;
+	}
+
+	// Channel settings
+	for(tinyxml2::XMLElement * channel = digitizerSettingElement->FirstChildElement(); channel!=NULL; channel = channel->NextSiblingElement()){
+
+		int channelNumber = 0;
+		int pulsePolarity = 0;
+		int dcOffset = 0;
+		bool isTrigger = false;
+
+		if( channel->QueryIntAttribute("number", &channelNumber) != 0){
+			PrintMissingElement("digitizer:channel:number");
+			parseSuccess = false;
+		}
+
+		if( channel->QueryIntAttribute("pulsePolarity", &pulsePolarity) != 0){
+			PrintMissingElement("digitizer:channel:pulsePolarity");
+			parseSuccess = false;
+		}
+
+		if( channel->QueryIntAttribute("dcOffset", &dcOffset) != 0){
+			PrintMissingElement("digitizer:channel:dcOffset");
+			parseSuccess = false;
+		}
+
+		if( channel->QueryBoolAttribute("isChannelTrigger", &isTrigger) != 0){
+			PrintMissingElement("digitizer:channel:isChannelTrigger");
+			parseSuccess = false;
+		}
+
+		digitizerSettings.channelSettings.push_back(CaenDigitizerChannelSettings(channelNumber, static_cast<uint16_t>(dcOffset), pulsePolarity, isTrigger));
+		digitizerSettings.nchannels++;
 	}
 
 
@@ -187,8 +207,6 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 
 	// Digitizer Settings
 	std::cout << "Digitizer Settings\n";
-	std::cout << "\tChannel number: " 			 << digitizerSettings.channel 									 << "\n";
-	std::cout << "\tSampling Rate (MHz): " 	  	 << digitizerSettings.samplingRate 		            			 << "\n";
 	std::cout << "\tNumber of Samples Per Trigger: " << digitizerSettings.nSamplesPerTrigger 					 << "\n";
 	std::cout << "\tFraction of Waveform Post Trigger: " << digitizerSettings.postTriggerFraction 					 << "\n";
 	std::cout << "\tTrigger Mode: "                  << DigitizerTriggerModesChar[digitizerSettings.triggerMode]                     << "\n";
@@ -196,7 +214,17 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 	std::cout << "\tTrigger Polarity: "              << digitizerSettings.triggerPolarity 						 << "\n";
 	std::cout << "\tMaximum Number of Events Transferred per Read: " << digitizerSettings.maxNumberEventsTransferred                 << "\n";
 	std::cout << "\tDC Offset of Dynamic Voltage Range (Negative Direction): " << digitizerSettings.acquisitionDCOffset               << "\n";
-	std::cout << "\tNumber of Digitizer Boards: "    << digitizerSettings.numberOfBoards 	 					 << "\n";
+	std::cout << "\tNumber of Digitizer Boards: "    << digitizerSettings.numberOfBoards  					 << "\n";
+
+	// Channel Settings
+	std::cout << "\tNumber of Channels: " << digitizerSettings.nchannels << "\n";
+	for (int i = 0; i < digitizerSettings.nchannels; ++i)
+	{
+		std::cout << "\t\tChannel Number: " << digitizerSettings.channelSettings[i].channelNumber << "\n";
+		std::cout << "\t\t\tDC Offset: " << digitizerSettings.channelSettings[i].channelDCOffset << "\n";
+		std::cout << "\t\t\tPulse Polarity: " << digitizerSettings.channelSettings[i].pulsePolarity << "\n";
+		std::cout << "\t\t\tIs Channel Trigger? " << digitizerSettings.channelSettings[i].isChannelTrigger << "\n";
+	}
 	
 	// FPGA Settings
 	std::cout << "FPGA Settings\n";

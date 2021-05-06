@@ -5,6 +5,7 @@
 #include "colors.h"
 #include <string>
 #include <iostream>
+#include <vector>
 
 enum DigitizerTriggerModes
 {
@@ -24,10 +25,26 @@ enum TopMetalReadoutMode
 
 
 // Definition of structures containing data
+
+struct CaenDigitizerChannelSettings
+{
+	int channelNumber;
+	uint16_t channelDCOffset;
+	int pulsePolarity;
+	bool isChannelTrigger;
+
+	CaenDigitizerChannelSettings(int number, int offset, int polarity, bool isTrigger) :
+		channelNumber(number),
+		channelDCOffset(offset),
+		pulsePolarity(polarity),
+		isChannelTrigger(isTrigger) {}
+	CaenDigitizerChannelSettings(){}
+
+};
+
 struct CaenDigitizerSettings
 {
-	int channel;
-	double samplingRate; // MHz
+	int nchannels = 0;
 	int nSamplesPerTrigger;
 	double postTriggerFraction;
 	int maxNumberEventsTransferred;
@@ -37,7 +54,11 @@ struct CaenDigitizerSettings
 	uint16_t acquisitionDCOffset;
 	int numberOfBoards;
 	int useExternalClock;
+
+	std::vector<CaenDigitizerChannelSettings> channelSettings;
 };
+
+
 
 struct TopMetalFPGASettings
 {

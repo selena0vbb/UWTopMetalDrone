@@ -52,7 +52,8 @@ int main(int argc, char const *argv[])
 
 	// Create and communicate with digitizer
 	std::printf("Connect and configure digitizer....\n");
-	TopMetalDigitizer digitizer(config.GetDigitizerSettings());
+	CaenDigitizerSettings digitizerSettings = config.GetDigitizerSettings();
+	TopMetalDigitizer digitizer(digitizerSettings);
 	digitizer.SetVerboseLevel(1);
 	digitizer.ConfigureDigitizer();
 	digitizer.StartDataAcquisition();
@@ -92,23 +93,37 @@ int main(int argc, char const *argv[])
 			void * eventBuffer = digitizer.GetEventBuffer();
 			
 			CAEN_DGTZ_GetEventInfo(digitizer.GetBoardAddress(), digitizer.GetBuffer(), digitizer.GetReadoutSize(), i, &eventInfo, &evtptr);
-			std::cout << "EventCounter: " << eventInfo.EventCounter << "\t  ";
+			std::cout << "EventCounter: " << eventInfo.EventCounter << "\t";
 			CAEN_DGTZ_DecodeEvent(digitizer.GetBoardAddress(), evtptr, &eventBuffer);
 			CAEN_DGTZ_UINT16_EVENT_t * test = static_cast<	CAEN_DGTZ_UINT16_EVENT_t * >(eventBuffer);
-			double mean = 0;
 			int waveformDownsamplingRate = config.GetWaveformDownsamplingRate();
-			for(int j=0; j < test->ChSize[0]; j++){
-				if (j % waveformDownsamplingRate == 0)
-				{
-					mean += test->DataChannel[0][j];
+			
+
+			// Write values to file
+			std::cout << "Mean ADU ";
+			for (int i = 0; i < digitizer.GetNumberOfChannels(); ++i)
+			{
+				int channelNumber = digitizerSettings.channelSettings[i].channelNumber;
+				wf.write((char *)test->DataChannel[channelNumber], sizeof(uint16_t)*test->ChSize[0] );
+
+
+				if(digitizer.GetVerboseLevel() > 0){
+					double mean = 0;
+
+					for(int j=0; j < test->ChSize[channelNumber]; j++){
+						if (j % waveformDownsamplingRate == 0)
+						{
+							mean += test->DataChannel[channelNumber][j];
+						}
+						
+					}
+					mean /= (test->ChSize[channelNumber] / waveformDownsamplingRate);
+					std::cout << "Channel " << channelNumber << ": " << mean << "\t";	
+
 				}
-				
 			}
-			wf.write((char *)test->DataChannel[0], sizeof(uint16_t)*test->ChSize[0] );
 
 
-			mean /= (test->ChSize[0] / waveformDownsamplingRate);
-			std::cout << "Mean ADU: " << mean;	
 			std::cout << "\n";
 	        CAEN_DGTZ_FreeEvent(digitizer.GetBoardAddress(), &eventBuffer);
 		}

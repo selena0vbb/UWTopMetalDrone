@@ -17,6 +17,7 @@ public:
 	int GetVerboseLevel(){ return verbose; };
 	int GetBoardAddress() { return boardAddr; };
 	int GetNumberOfEventsRead() { return numberEventsRead; };
+	int GetNumberOfChannels() { return nchannels; };
 	char * GetBuffer() { return buffer; };
 	char * GetEventPtr() { return evtptr; };
 	void * GetEventBuffer() { return eventBuffer; };
@@ -55,7 +56,7 @@ private:
 	int triggerThreshold; // in ADC
 
 	// Readout settings
-	int channel;
+	int nchannels;
 	int maxNumberEventsTransferred;
 	char * buffer = NULL;
 	char * evtptr = NULL; // Need to be initialized to null
@@ -63,6 +64,9 @@ private:
 	uint32_t bufferSize, readoutSize;
     uint32_t numberEventsRead = 0;
 	uint16_t acquisitionDCOffset;
+
+	// Channel settings
+	std::vector<CaenDigitizerChannelSettings> channelSettings;
 
 	// Relevant Register address
 	const uint32_t ClockSourceAddress = 0x8100;

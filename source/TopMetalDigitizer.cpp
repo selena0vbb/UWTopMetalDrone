@@ -17,7 +17,7 @@ TopMetalDigitizer::TopMetalDigitizer(){
 
 TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 
-	channel = digitizerSettings.channel;
+	nchannels = digitizerSettings.nchannels;
 	nboards = digitizerSettings.numberOfBoards;
 	nSamplesPerTrigger = digitizerSettings.nSamplesPerTrigger;
 	useExternalClock = digitizerSettings.useExternalClock;
@@ -26,8 +26,7 @@ TopMetalDigitizer::TopMetalDigitizer(CaenDigitizerSettings & digitizerSettings){
 	triggerThreshold = digitizerSettings.triggerThreshold;
 	triggerPolarity  = static_cast<CAEN_DGTZ_PulsePolarity_t> (digitizerSettings.triggerPolarity);
 	maxNumberEventsTransferred = digitizerSettings.maxNumberEventsTransferred;
-	acquisitionDCOffset = digitizerSettings.acquisitionDCOffset;
-
+	channelSettings = digitizerSettings.channelSettings;
 }
 
 TopMetalDigitizer::~TopMetalDigitizer(){
@@ -62,17 +61,24 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 	if (verbose) std :: cout << "Writing clock source register...\t\tStatus: " << err << "\n";
 
 	// Congifure board with settings
-	uint32_t channelMask;
-	channelMask = pow(2, channel);
+	uint32_t channelMask = 0;
 	err = CAEN_DGTZ_SetRecordLength(boardAddr, nSamplesPerTrigger);
 	err = CAEN_DGTZ_SetPostTriggerSize(boardAddr, (uint32_t) (postTriggerFraction * 100) );
-	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, channelMask);
 	err = CAEN_DGTZ_SetMaxNumEventsBLT(boardAddr, maxNumberEventsTransferred);
 	err = CAEN_DGTZ_SetAcquisitionMode(boardAddr, CAEN_DGTZ_SW_CONTROLLED);
-	err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, channel, acquisitionDCOffset);
-	err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, channel, triggerPolarity);
 	err = CAEN_DGTZ_SetIOLevel(boardAddr, CAEN_DGTZ_IOLevel_TTL); // Set the front panel inputs to accept TTL signals
 	
+
+	// Set individual channel settings
+	for (int i = 0; i < nchannels; ++i)
+	{
+		uint32_t channelNumber = channelSettings[i].channelNumber;
+		err = CAEN_DGTZ_SetChannelDCOffset(boardAddr, channelNumber, channelSettings[i].channelDCOffset);
+		err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, channelNumber, static_cast<CAEN_DGTZ_PulsePolarity_t> (channelSettings[i].pulsePolarity) ); 
+		channelMask += pow(2, channelNumber);
+	}
+	err = CAEN_DGTZ_SetChannelEnableMask(boardAddr, channelMask);
+
 	if (verbose) std::cout << "Congfigure board settings...\t\tStatus: " << err << "\n";
 
 	// Configure Trigger and acquisition settings depending on the settings file
@@ -84,9 +90,14 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 		case SelfTrigger:
 
 			err = CAEN_DGTZ_SetChannelSelfTrigger(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY, channelMask);
-			err = CAEN_DGTZ_SetChannelPulsePolarity(boardAddr, 0, triggerPolarity);
-			err = CAEN_DGTZ_SetTriggerPolarity(boardAddr, 0, static_cast<CAEN_DGTZ_TriggerPolarity_t> (triggerPolarity));
-			err = CAEN_DGTZ_SetChannelTriggerThreshold(boardAddr, 0, triggerThreshold);
+			
+			for (int i = 0; i < nchannels; ++i)
+			{
+				uint32_t channelNumber = channelSettings[i].channelNumber;
+
+				err = CAEN_DGTZ_SetTriggerPolarity(boardAddr, channelNumber, static_cast<CAEN_DGTZ_TriggerPolarity_t> (triggerPolarity));
+				if (channelSettings[i].isChannelTrigger) err = CAEN_DGTZ_SetChannelTriggerThreshold(boardAddr, channelNumber, triggerThreshold);
+			}
 
 			break;
 		case SoftwareTrigger:
@@ -94,13 +105,6 @@ CAEN_DGTZ_ErrorCode TopMetalDigitizer::ConfigureDigitizer(){
 			break;
 		case ExternalTrigger:
 			err = CAEN_DGTZ_SetExtTriggerInputMode(boardAddr, CAEN_DGTZ_TRGMODE_ACQ_ONLY);
-			// uint32_t triggerRegister;
-			// err = CAEN_DGTZ_ReadRegister(boardAddr, 0x810C, &triggerRegister);
-			// err = CAEN_DGTZ_WriteRegister(boardAddr, 0x810C, 1073741824);
-			// err = CAEN_DGTZ_ReadRegister(boardAddr, 0x810C, &triggerRegister);
-
-
-			// std::cout << triggerRegister << std::endl;
 			break;
 	}
 	if (verbose) std::cout << "Configure trigger settings...\t\tStatus: " << err << "\n";
