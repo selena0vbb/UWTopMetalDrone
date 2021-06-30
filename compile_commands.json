@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/home/selena/Documents/UWTopMetalDrone",
+  "command": "/usr/bin/c++   -I/home/selena/Documents/UWTopMetalDrone/include  -g   -o CMakeFiles/topMetalDrone.dir/topMetalDrone.cpp.o -c /home/selena/Documents/UWTopMetalDrone/topMetalDrone.cpp",
+  "file": "/home/selena/Documents/UWTopMetalDrone/topMetalDrone.cpp"
+},
+{
+  "directory": "/home/selena/Documents/UWTopMetalDrone",
+  "command": "/usr/bin/c++   -I/home/selena/Documents/UWTopMetalDrone/include  -g   -o CMakeFiles/topMetalDrone.dir/source/ProcessWaveform.cpp.o -c /home/selena/Documents/UWTopMetalDrone/source/ProcessWaveform.cpp",
+  "file": "/home/selena/Documents/UWTopMetalDrone/source/ProcessWaveform.cpp"
+},
+{
+  "directory": "/home/selena/Documents/UWTopMetalDrone",
+  "command": "/usr/bin/c++   -I/home/selena/Documents/UWTopMetalDrone/include  -g   -o CMakeFiles/topMetalDrone.dir/source/TopMetalDigitizer.cpp.o -c /home/selena/Documents/UWTopMetalDrone/source/TopMetalDigitizer.cpp",
+  "file": "/home/selena/Documents/UWTopMetalDrone/source/TopMetalDigitizer.cpp"
+},
+{
+  "directory": "/home/selena/Documents/UWTopMetalDrone",
+  "command": "/usr/bin/c++   -I/home/selena/Documents/UWTopMetalDrone/include  -g   -o CMakeFiles/topMetalDrone.dir/source/TopMetalDroneConfig.cpp.o -c /home/selena/Documents/UWTopMetalDrone/source/TopMetalDroneConfig.cpp",
+  "file": "/home/selena/Documents/UWTopMetalDrone/source/TopMetalDroneConfig.cpp"
+},
+{
+  "directory": "/home/selena/Documents/UWTopMetalDrone",
+  "command": "/usr/bin/c++   -I/home/selena/Documents/UWTopMetalDrone/include  -g   -o CMakeFiles/topMetalDrone.dir/source/tinyxml2.cpp.o -c /home/selena/Documents/UWTopMetalDrone/source/tinyxml2.cpp",
+  "file": "/home/selena/Documents/UWTopMetalDrone/source/tinyxml2.cpp"
+}
+]

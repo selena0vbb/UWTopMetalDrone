@@ -37,29 +37,28 @@
 		-->
 <digitizer 
    pixelScanRate="10" 
-   nSamplesPerTrigger="10000"
-   postTriggerFraction="0.95"
-   maxNumberEventsTransferred="2" 
-   useExternalClock="0" 
+   nSamplesPerTrigger="640000"
+   postTriggerFraction="0.8"
+   maxNumberEventsTransferred="100" 
+   useExternalClock="1" 
    triggerPolarity="0"
-   triggerThreshold="8200"
-   triggerMode="2"
+   triggerThreshold="13000"
+   triggerMode="1"
    numberOfBoards="1"
 >
 		<channel0 
 			number="0"
 			pulsePolarity="0"
-	   		dcOffset="32768"
+	   		dcOffset="32000"
 	   		isChannelTrigger="0"
 		/>
-		<channel1 
-			number="2"
+		<channel1
+			number="1"
 			pulsePolarity="0"
-	   		dcOffset="32768"
-	   		isChannelTrigger="1"
-
-		/>
-</digitizer>
+			dcOffset="32000"
+			isChannelTrigger="1"
+			/>
+				</digitizer>
 
 
 
