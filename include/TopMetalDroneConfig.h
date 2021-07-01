@@ -64,7 +64,9 @@ struct TopMetalFPGASettings
 {
 	bool stopAddressEnable;
 	int stopAddress;
-	
+	bool write_mask;
+	std::string mask_file;
+	int fpga_threshold;
 };
 
 

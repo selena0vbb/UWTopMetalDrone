@@ -74,6 +74,10 @@
 <fpga
 	stopAddressMode="1"
 	stopAddress="5000"
+	write_mask = "0"
+	mask_file = "test.txt"
+	fpga_threshold = "2"
+
 />
 
 <!-- Output file settings
