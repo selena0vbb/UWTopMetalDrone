@@ -168,6 +168,23 @@ bool TopMetalDroneConfig::ReadConfigFile(const std::string &configFilename){
 		PrintMissingElement("fpga:stopAddress");
 		parseSuccess = false;
 	}
+	
+	if( fpgaSettingElement->QueryBoolAttribute("write_mask", &fpgaSettings.write_mask) != 0){
+		PrintMissingElement("fpga:write_mask");
+		parseSuccess = false;
+	}
+	
+	if( fpgaSettingElement->QueryStringAttribute("mask_file", &fpgaSettings.mask_file) != 0){
+		PrintMissingElement("fpga:mask_file");
+		parseSuccess = false;
+	}
+	if( fpgaSettingElement->QueryIntAttribute("fpga_threshold", &fpgaSettings.fpga_threshold) != 0){
+		PrintMissingElement("fpga:fpga_threshold");
+		parseSuccess = false;
+	}
+	
+
+
 
 	// output settings
 	tinyxml2::XMLElement * outputSettingElement = configXML.FirstChildElement("output");
@@ -230,7 +247,9 @@ void TopMetalDroneConfig::PrintConfigSettings () const {
 	std::cout << "FPGA Settings\n";
 	std::cout << "\tFPGA Stop Address Enabled: " << fpgaSettings.stopAddressEnable << "\n";
 	std::cout << "\tFPGA Stop Address Value: "	 << fpgaSettings.stopAddress       << "\n";
-
+	std::cout << "\tFPGA Writing Mask: " << fpgaSettings.write_mask << "\n";
+	std::cout <<"\tFPGA Mask File: " << fpgaSettings.mask_file <<"\n";
+	std::cout <<"\tFPGA Threshold (ADU): " <<fpgaSettings.fpga_threshold<<"\n";
 	// Output settings
 	std::cout << "Output Settings\n";
 	std::cout << "\tOutput filename: " << outputFilename << "\n";

@@ -8,6 +8,11 @@
 #include "tinyxml2.h"
 #include "CLI11.hpp"
 
+//Serial communication headers
+#include <fcntl.h> //file controls
+#include <termios.h> //terminal control
+#include <unistd.h> //write, read and close
+
 // Custom headers
 #include "TopMetalDroneConfig.h"
 #include "TopMetalDigitizer.h"
@@ -48,7 +53,25 @@ int main(int argc, char const *argv[])
 
 
 	if(configSucces) config.PrintConfigSettings();
+	//fpga settings	
+    TopMetalFPGASettings test = config.GetTopMetalFPGASettings();
+	
+	//Setup Serial Port to communicate with FPGA
+	int serial_port = open("/dev/ttyUSB2", O_RDWR);
+	if (serial_port < 0) {
+		std::printf("Error opening serial port to FPGA");
+	}
+	struct termios tty;
 
+	if(tcgetattr(serial_port, &tty) != 0) {
+    printf("Error from tcgetattr");
+	}
+	tty.c_cflag &=CSIZE;
+	tty.c_cflag |= CS8;
+	cfsetispeed(&tty, B9600);
+	if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
+		printf("Error from tcsetattr");
+	}
 
 	// Create and communicate with digitizer
 	std::printf("Connect and configure digitizer....\n");
@@ -57,10 +80,7 @@ int main(int argc, char const *argv[])
 	digitizer.SetVerboseLevel(1);
 	digitizer.ConfigureDigitizer();
 	digitizer.StartDataAcquisition();
-
-
-
-	/*
+ 	/*
 	  Compute median and mad image if necessary
 	*/
 

@@ -65,7 +65,7 @@ struct TopMetalFPGASettings
 	bool stopAddressEnable;
 	int stopAddress;
 	bool write_mask;
-	std::string mask_file;
+	const char* mask_file;
 	int fpga_threshold;
 };
 
@@ -104,7 +104,7 @@ private:
 	CaenDigitizerSettings digitizerSettings;
 
 	// FPGA
-	TopMetalFPGASettings  fpgaSettings;
+	TopMetalFPGASettings fpgaSettings;
 
 	// Output file
 	std::string outputFilename;
