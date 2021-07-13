@@ -69,7 +69,7 @@
 		- 0 : STOP_ADDR disable, pixels loop in circular buffer
 		- 1 : STOP_ADDR enabled
 	- stopAddress : pixel number to stop at during full readout
-	-write_mask : 1 to write the mask onto the FPGA, 0 to not write anything 
+	-write_mask : 1 to write the mask onto the FPGA, 0 to turn off 
 	-mask_file : file pointing to mask
 	-fpga_threshold : threhsold value to write to FPGA (in ADU)
 -->
@@ -78,7 +78,7 @@
 	stopAddress="5000"
 	write_mask = "0"
 	mask_file = "test.txt"
-	fpga_threshold = "2"
+	fpga_threshold = "7"
 />
 
 <!-- Output file settings

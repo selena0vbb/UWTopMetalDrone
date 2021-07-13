@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include <bitset>
 // Utility headers
 #include "tinyxml2.h"
 #include "CLI11.hpp"
@@ -54,7 +54,7 @@ int main(int argc, char const *argv[])
 
 	if(configSucces) config.PrintConfigSettings();
 	//fpga settings	
-    TopMetalFPGASettings test = config.GetTopMetalFPGASettings();
+    TopMetalFPGASettings fpgaSettings = config.GetTopMetalFPGASettings();
 	
 	//Setup Serial Port to communicate with FPGA
 	int serial_port = open("/dev/ttyUSB2", O_RDWR);
@@ -68,10 +68,57 @@ int main(int argc, char const *argv[])
 	}
 	tty.c_cflag &=CSIZE;
 	tty.c_cflag |= CS8;
+	tty.c_lflag &= ~ICANON;
 	cfsetispeed(&tty, B9600);
 	if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
 		printf("Error from tcsetattr");
 	}
+	
+	//Write Threshold to FPGA
+	char start_packet = 0xED;
+	char stop_packet1 = 0x0;
+	char stop_packet2 = 0xE6;
+	char threshold_value = fpgaSettings.fpga_threshold;
+	char threshold_packet = 0x80;
+	
+	char threshold_msg[] = {start_packet, threshold_value, threshold_packet, stop_packet1, stop_packet2};
+	write(serial_port, threshold_msg, 5);
+
+	//Write Mask to FPGA
+	char mask[5184*2];
+	int pxladdr = 0;
+	//Create empty mask
+	for(int i =0; i <5184*2; i+=2){
+		std::string s = std::bitset<16>(pxladdr).to_string();
+		std::string s_firstbyte = s.substr(8,16);
+		std::string s_secondbyte = s.substr(0,8);
+	 		
+		int i_firstbyte = std::stoi(s_firstbyte, 0, 2);
+		int i_secondbyte = std::stoi(s_secondbyte, 0, 2);
+		pxladdr++;	
+		mask[i] = i_firstbyte;
+		mask[i+1] =i_secondbyte;
+	}
+	//If desired, mask the pixels given in the file;
+	if (fpgaSettings.write_mask == true){
+		std::printf("Writing mask to FPGA...\n");	
+		std::ifstream maskfile("mask_test.txt");
+		int maskaddr, mask_on;
+		while(maskfile >> maskaddr >> mask_on){
+			char secondbyte = mask[maskaddr*2+1];
+			int i_secondbyte = (int)secondbyte;
+			mask[maskaddr*2+1] = i_secondbyte + 32;
+		}
+	}else{
+		std::printf("Writing empty Mask to FPGA...\n");
+	}
+		
+	write(serial_port, &start_packet, 1);
+	write(serial_port, mask, 5184*2);
+	write(serial_port, &stop_packet1, 1);
+	write(serial_port, &stop_packet2, 1);
+
+	close(serial_port);
 
 	// Create and communicate with digitizer
 	std::printf("Connect and configure digitizer....\n");
@@ -156,3 +203,4 @@ int main(int argc, char const *argv[])
 
 	return 0;
 }
+
