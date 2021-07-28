@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <bitset>
+#include <chrono>
+
 // Utility headers
 #include "tinyxml2.h"
 #include "CLI11.hpp"
@@ -109,16 +111,16 @@ int main(int argc, char const *argv[])
 			int i_secondbyte = (int)secondbyte;
 			mask[maskaddr*2+1] = i_secondbyte + 32;
 		}
+
+		write(serial_port, &start_packet, 1);
+		write(serial_port, mask, 5184*2);
+		write(serial_port, &stop_packet1, 1);
+		write(serial_port, &stop_packet2, 1);
 	}else{
-		std::printf("Writing empty Mask to FPGA...\n");
+		std::printf("Ignoring Mask...\n");
 	}
 		
-	write(serial_port, &start_packet, 1);
-	write(serial_port, mask, 5184*2);
-	write(serial_port, &stop_packet1, 1);
-	write(serial_port, &stop_packet2, 1);
-
-	close(serial_port);
+		close(serial_port);
 
 	// Create and communicate with digitizer
 	std::printf("Connect and configure digitizer....\n");
@@ -145,6 +147,10 @@ int main(int argc, char const *argv[])
 	   }
 	// Get event info
 	CAEN_DGTZ_EventInfo_t eventInfo;
+
+	std::time_t start, end;
+	
+	time(&start);
 	while(eventTransferredCounter < config.GetDigitizerSettings().maxNumberEventsTransferred){
 
 		// Depending on trigger type, send SW trigger or not
@@ -153,7 +159,6 @@ int main(int argc, char const *argv[])
 		// usleep(20000);
 		digitizer.TransferData();
 		eventTransferredCounter += digitizer.GetNumberOfEventsRead();
-
 		for (int i = 0; i < digitizer.GetNumberOfEventsRead(); ++i)
 		{
 			char * evtptr = digitizer.GetEventPtr();
@@ -194,13 +199,13 @@ int main(int argc, char const *argv[])
 			std::cout << "\n";
 	        CAEN_DGTZ_FreeEvent(digitizer.GetBoardAddress(), &eventBuffer);
 		}
-		
+		time(&end);
+
 	}
 	wf.close();
 	
-	std::cout << "Number of Events: " << digitizer.GetNumberOfEventsRead() << std::endl;
-	
-
+	double time_elapsed = double(end-start);
+	std::cout << "Event Rate: "<< eventTransferredCounter/time_elapsed<< " Counts/second" <<std::endl;
 	return 0;
 }
 
